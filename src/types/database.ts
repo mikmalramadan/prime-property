@@ -106,19 +106,45 @@ export interface Database {
         Row:    ProfileRow;
         Insert: ProfileInsert;
         Update: ProfileUpdate;
+        Relationships: [];
       };
       properties: {
         Row:    PropertyRow;
         Insert: PropertyInsert;
         Update: PropertyUpdate;
+        Relationships: [
+          {
+            foreignKeyName: 'properties_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       audit_logs: {
         Row:    AuditLogRow;
         Insert: AuditLogInsert;
         Update: Partial<AuditLogInsert>;
+        Relationships: [
+          {
+            foreignKeyName: 'audit_logs_property_id_fkey';
+            columns: ['property_id'];
+            isOneToOne: false;
+            referencedRelation: 'properties';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'audit_logs_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
       };
     };
-    Views:     Record<string, never>;
+    Views: Record<string, never>;
     Functions: Record<string, never>;
     Enums: {
       user_role:        UserRole;
@@ -127,5 +153,6 @@ export interface Database {
       property_siap:    PropertySiap;
       audit_action:     AuditAction;
     };
+    CompositeTypes: Record<string, never>;
   };
 }
