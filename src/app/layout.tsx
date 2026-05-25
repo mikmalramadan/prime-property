@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { ToastProvider } from "@/components/ui/Toast";
 import "./globals.css";
 
 // next/font/google self-hosts Inter — no external network request at runtime
@@ -23,6 +24,7 @@ export default function RootLayout({
     <html lang="en" className={inter.variable}>
       <body className="min-h-dvh flex flex-col antialiased">
         {children}
+        <ToastProvider />
       </body>
     </html>
   );

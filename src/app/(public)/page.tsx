@@ -1,3 +1,13 @@
+import { HeroSection } from '@/components/landing/HeroSection'
+import { FeaturedProperties } from '@/components/landing/FeaturedProperties'
+import { ValueProposition } from '@/components/landing/ValueProposition'
+
 export default function HomePage() {
-  return <main></main>;
+  return (
+    <>
+      <HeroSection />
+      <FeaturedProperties />
+      <ValueProposition />
+    </>
+  )
 }
