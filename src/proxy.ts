@@ -2,7 +2,10 @@ import { type NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
 /**
- * Next.js Middleware — runs on every matched request before rendering.
+ * Next.js Proxy (previously Middleware) — runs on every matched request.
+ *
+ * In Next.js 16, the `middleware` file convention has been renamed to `proxy`.
+ * The functionality remains the same.
  *
  * Responsibilities (implemented in updateSession):
  *  1. Refresh the Supabase session so Server Components always receive
@@ -10,7 +13,7 @@ import { updateSession } from '@/lib/supabase/middleware'
  *  2. Protect /agent/* routes — redirect unauthenticated users to /agent/login.
  *  3. Redirect authenticated users away from /agent/login to /agent/dashboard.
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   return updateSession(request)
 }
 

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { ContactForm } from '@/components/contact/ContactForm'
 
 export const metadata: Metadata = {
-  title: 'Kontak — Prime Property',
+  title: 'Kontak',
   description: 'Hubungi tim Prime Property untuk informasi properti, konsultasi, atau pertanyaan lainnya.',
 }
 

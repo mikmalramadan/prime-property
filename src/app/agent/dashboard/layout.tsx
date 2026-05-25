@@ -2,6 +2,7 @@ import { getCurrentProfile } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
+import { MobileSidebar } from '@/components/layout/MobileSidebar'
 
 /**
  * Agent Dashboard Layout — wraps all /agent/dashboard/* pages.
@@ -77,8 +78,13 @@ export default async function DashboardLayout({
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top header */}
         <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200/50 h-16 flex items-center px-4 sm:px-6 lg:px-8 justify-between">
-          {/* Mobile logo */}
-          <div className="flex items-center gap-2.5 lg:hidden">
+          {/* Mobile: hamburger + logo */}
+          <div className="flex items-center gap-2 lg:hidden">
+            <MobileSidebar
+              email={profile.email}
+              role={profile.role}
+              isSuperadmin={isSuperadmin}
+            />
             <Image src="/logo.png" alt="Logo" width={24} height={24} className="rounded" />
             <span className="text-base font-bold text-brand-black tracking-tight">
               Prime<span className="text-brand-gold">Property</span>

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 
 export const metadata: Metadata = {
-  title: 'Tentang Kami — Prime Property',
+  title: 'Tentang Kami',
   description: 'Profil perusahaan, visi & misi, dan nilai-nilai Prime Property.',
 }
 
