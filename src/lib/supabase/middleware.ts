@@ -2,29 +2,31 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import type { Database } from '@/types/database'
 
+/** All protected agent routes live under this prefix */
+const AGENT_PREFIX  = '/agent'
+const AGENT_LOGIN   = '/agent/login'
+const AGENT_DASHBOARD = '/agent/dashboard'
+
 /**
- * Refresh the Supabase session inside Next.js Middleware.
+ * Refresh the Supabase session and enforce /agent/* route protection.
  *
- * This is the only place where session refresh MUST happen so that:
- *  1. The refreshed session cookie is written to the response before the page renders.
- *  2. Server Components downstream can read the valid (non-expired) session.
+ * Rules:
+ *  1. Every /agent/* route except /agent/login requires authentication.
+ *     → Unauthenticated visitors are redirected to /agent/login.
+ *  2. An already-authenticated user who visits /agent/login is redirected
+ *     to /agent/dashboard (avoids landing on the login page while signed in).
  *
- * Pattern per @supabase/ssr docs design.md:
- *  - `getAll`  reads from the incoming request cookies.
- *  - `setAll`  writes BOTH to the mutated request (so downstream server code
- *              sees the new token) AND to the response (so the browser stores it).
+ * Session refresh pattern (per @supabase/ssr docs/design.md):
+ *  - `getAll`  reads cookies from the incoming request.
+ *  - `setAll`  writes new tokens BOTH to the mutated request (downstream server
+ *              code sees fresh tokens) AND to the response (browser stores them).
  *
- * Usage — create a `src/middleware.ts` file that calls this:
- * ```ts
- * import { updateSession } from '@/lib/supabase/middleware'
- * export async function middleware(request: NextRequest) {
- *   return updateSession(request)
- * }
- * export const config = { matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'] }
- * ```
+ * IMPORTANT: Always use getUser() here, never getSession().
+ *  getSession() reads from cookies without calling the Auth server and must
+ *  not be trusted for authorization decisions.
  */
 export async function updateSession(request: NextRequest) {
-  // Start with a passthrough response that we can attach Set-Cookie headers to
+  // Passthrough response — we may swap it for a redirect below
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient<Database>(
@@ -36,13 +38,13 @@ export async function updateSession(request: NextRequest) {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet) {
-          // 1. Mutate the request so downstream server code sees fresh tokens
+          // 1. Mutate request so downstream Server Components see fresh tokens
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value),
           )
-          // 2. Re-create the response with the mutated request headers
+          // 2. Re-create the response with the updated request headers
           supabaseResponse = NextResponse.next({ request })
-          // 3. Attach Set-Cookie headers so the browser stores the new tokens
+          // 3. Attach Set-Cookie headers so the browser persists the new tokens
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options),
           )
@@ -51,21 +53,32 @@ export async function updateSession(request: NextRequest) {
     },
   )
 
-  // IMPORTANT: Do NOT call supabase.auth.getSession() here.
-  // getSession() reads from cookies without verifying with the Auth server.
-  // getUser() calls the Auth server and is safe for authorization decisions.
-  const { data: { user } } = await supabase.auth.getUser()
+  // Verify session with Auth server — safe for authorization decisions
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  // Example: redirect unauthenticated users away from the admin area
-  // Uncomment and adapt once admin routes are created.
-  //
-  // if (!user && request.nextUrl.pathname.startsWith('/admin')) {
-  //   const url = request.nextUrl.clone()
-  //   url.pathname = '/login'
-  //   return NextResponse.redirect(url)
-  // }
+  const { pathname } = request.nextUrl
 
-  void user // suppress unused-variable lint until the redirect is enabled
+  // ── Rule 1: protect all /agent/* routes except /agent/login ──────────────
+  const isAgentRoute = pathname.startsWith(AGENT_PREFIX)
+  const isLoginPage  = pathname === AGENT_LOGIN
+
+  if (isAgentRoute && !isLoginPage && !user) {
+    const loginUrl = request.nextUrl.clone()
+    loginUrl.pathname = AGENT_LOGIN
+    // Preserve the intended destination so we can redirect back after login
+    loginUrl.searchParams.set('next', pathname)
+    return NextResponse.redirect(loginUrl)
+  }
+
+  // ── Rule 2: redirect authenticated users away from the login page ─────────
+  if (isLoginPage && user) {
+    const dashboardUrl = request.nextUrl.clone()
+    dashboardUrl.pathname = AGENT_DASHBOARD
+    dashboardUrl.search = ''
+    return NextResponse.redirect(dashboardUrl)
+  }
 
   return supabaseResponse
 }
