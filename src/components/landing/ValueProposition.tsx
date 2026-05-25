@@ -44,36 +44,45 @@ const VALUES = [
 
 export function ValueProposition() {
   return (
-    <section className="py-20 sm:py-28 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative py-24 sm:py-32 bg-gray-50 overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-brand-gold/10 rounded-full blur-3xl opacity-60" />
+      <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-brand-gold/5 rounded-full blur-3xl opacity-60" />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section heading */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-brand-black">
+        <div className="text-center max-w-3xl mx-auto mb-20 animate-fade-in-up">
+          <h2 className="text-4xl sm:text-5xl font-extrabold text-brand-black tracking-tight">
             Mengapa{' '}
-            <span className="text-brand-gold">Prime Property</span>?
+            <span className="text-gradient">Prime Property</span>?
           </h2>
-          <p className="mt-4 text-gray-500 text-lg">
-            Kami berkomitmen memberikan pengalaman terbaik dalam pencarian
-            properti impian Anda.
+          <p className="mt-6 text-gray-500 text-lg sm:text-xl leading-relaxed">
+            Kami berkomitmen memberikan pengalaman premium dan transparan
+            dalam pencarian properti impian Anda.
           </p>
         </div>
 
         {/* Value cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {VALUES.map((v) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {VALUES.map((v, i) => (
             <div
               key={v.title}
-              className="group p-6 rounded-2xl bg-brand-gray/50 hover:bg-white hover:shadow-xl hover:shadow-brand-gold/5 border border-transparent hover:border-brand-gold/20 transition-all duration-300"
+              className="group relative p-8 rounded-3xl bg-white border border-gray-100 hover:border-brand-gold/30 hover:shadow-2xl hover:shadow-brand-gold/10 hover:-translate-y-2 transition-all duration-500 animate-fade-in-up"
+              style={{ animationDelay: `${i * 150 + 200}ms` }}
             >
-              <div className="w-14 h-14 rounded-xl bg-brand-gold/10 text-brand-gold flex items-center justify-center mb-5 group-hover:bg-brand-gold group-hover:text-white transition-all duration-300">
-                {v.icon}
+              <div className="absolute inset-0 bg-gradient-to-br from-brand-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none" />
+              
+              <div className="relative z-10">
+                <div className="w-16 h-16 rounded-2xl bg-brand-gray text-brand-gold flex items-center justify-center mb-6 group-hover:bg-brand-gold group-hover:text-white group-hover:scale-110 transition-all duration-500 shadow-sm group-hover:shadow-md group-hover:shadow-brand-gold/30">
+                  {v.icon}
+                </div>
+                <h3 className="text-xl font-bold text-brand-black mb-3 group-hover:text-brand-gold transition-colors duration-300">
+                  {v.title}
+                </h3>
+                <p className="text-gray-500 text-sm sm:text-base leading-relaxed">
+                  {v.description}
+                </p>
               </div>
-              <h3 className="text-lg font-bold text-brand-black mb-2">
-                {v.title}
-              </h3>
-              <p className="text-gray-500 text-sm leading-relaxed">
-                {v.description}
-              </p>
             </div>
           ))}
         </div>

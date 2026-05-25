@@ -74,7 +74,7 @@ export async function requireRole(role: UserRole) {
 
   // Disabled accounts cannot access anything
   if (!p.is_active) {
-    redirect('/agent/login')
+    redirect('/agent/deactivated')
   }
 
   // Role check: 'admin' allows both, 'superadmin' only superadmin

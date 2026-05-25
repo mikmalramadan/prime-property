@@ -24,7 +24,7 @@ export function ContactForm() {
     <form ref={formRef} action={formAction} className="space-y-5">
       {/* Nama */}
       <div>
-        <label htmlFor="nama" className="block text-sm font-medium text-brand-black mb-1.5">
+        <label htmlFor="nama" className="block text-sm font-semibold text-brand-black mb-2">
           Nama Lengkap <span className="text-brand-red">*</span>
         </label>
         <input
@@ -33,16 +33,16 @@ export function ContactForm() {
           type="text"
           required
           placeholder="Masukkan nama lengkap"
-          className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-brand-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/50 focus:border-brand-gold transition-all text-sm"
+          className="w-full px-5 py-3.5 rounded-xl border border-gray-200 bg-gray-50/50 text-brand-black placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-brand-gold/20 focus:border-brand-gold transition-all duration-300 text-sm"
         />
         {state?.errors?.nama && (
-          <p className="mt-1 text-xs text-brand-red">{state.errors.nama}</p>
+          <p className="mt-1.5 text-xs font-medium text-brand-red">{state.errors.nama}</p>
         )}
       </div>
 
       {/* Email */}
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-brand-black mb-1.5">
+        <label htmlFor="email" className="block text-sm font-semibold text-brand-black mb-2">
           Email <span className="text-brand-red">*</span>
         </label>
         <input
@@ -51,16 +51,16 @@ export function ContactForm() {
           type="email"
           required
           placeholder="contoh@email.com"
-          className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-brand-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/50 focus:border-brand-gold transition-all text-sm"
+          className="w-full px-5 py-3.5 rounded-xl border border-gray-200 bg-gray-50/50 text-brand-black placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-brand-gold/20 focus:border-brand-gold transition-all duration-300 text-sm"
         />
         {state?.errors?.email && (
-          <p className="mt-1 text-xs text-brand-red">{state.errors.email}</p>
+          <p className="mt-1.5 text-xs font-medium text-brand-red">{state.errors.email}</p>
         )}
       </div>
 
       {/* Nomor HP */}
       <div>
-        <label htmlFor="phone" className="block text-sm font-medium text-brand-black mb-1.5">
+        <label htmlFor="phone" className="block text-sm font-semibold text-brand-black mb-2">
           Nomor HP <span className="text-brand-red">*</span>
         </label>
         <input
@@ -69,16 +69,16 @@ export function ContactForm() {
           type="tel"
           required
           placeholder="08xxxxxxxxxx"
-          className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-brand-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/50 focus:border-brand-gold transition-all text-sm"
+          className="w-full px-5 py-3.5 rounded-xl border border-gray-200 bg-gray-50/50 text-brand-black placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-brand-gold/20 focus:border-brand-gold transition-all duration-300 text-sm"
         />
         {state?.errors?.phone && (
-          <p className="mt-1 text-xs text-brand-red">{state.errors.phone}</p>
+          <p className="mt-1.5 text-xs font-medium text-brand-red">{state.errors.phone}</p>
         )}
       </div>
 
       {/* Pesan */}
       <div>
-        <label htmlFor="pesan" className="block text-sm font-medium text-brand-black mb-1.5">
+        <label htmlFor="pesan" className="block text-sm font-semibold text-brand-black mb-2">
           Pesan <span className="text-brand-red">*</span>
         </label>
         <textarea
@@ -87,16 +87,16 @@ export function ContactForm() {
           required
           rows={5}
           placeholder="Tulis pesan Anda di sini..."
-          className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-brand-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/50 focus:border-brand-gold transition-all text-sm resize-none"
+          className="w-full px-5 py-3.5 rounded-xl border border-gray-200 bg-gray-50/50 text-brand-black placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-brand-gold/20 focus:border-brand-gold transition-all duration-300 text-sm resize-none"
         />
         {state?.errors?.pesan && (
-          <p className="mt-1 text-xs text-brand-red">{state.errors.pesan}</p>
+          <p className="mt-1.5 text-xs font-medium text-brand-red">{state.errors.pesan}</p>
         )}
       </div>
 
       {/* Server-level error */}
       {state?.errors?.server && (
-        <div className="p-3 rounded-lg bg-red-50 text-brand-red text-sm">
+        <div className="p-4 rounded-xl bg-red-50 text-brand-red text-sm font-medium border border-red-100">
           {state.errors.server}
         </div>
       )}
@@ -105,9 +105,10 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={pending}
-        className="w-full py-3.5 bg-brand-gold text-brand-black font-bold rounded-lg text-sm hover:bg-brand-gold/90 transition-all duration-200 shadow-md shadow-brand-gold/20 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="group relative w-full py-4 bg-brand-gold text-brand-black font-extrabold rounded-xl text-sm uppercase tracking-wide overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-brand-gold/40 disabled:opacity-70 disabled:cursor-not-allowed hover:-translate-y-0.5"
       >
-        {pending ? 'Mengirim...' : 'Kirim Pesan'}
+        <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+        <span className="relative">{pending ? 'Mengirim Pesan...' : 'Kirim Pesan Sekarang'}</span>
       </button>
     </form>
   )

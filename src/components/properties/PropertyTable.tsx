@@ -19,29 +19,30 @@ export function PropertyTable({ properties, sort, order }: PropertyTableProps) {
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-      <div className="overflow-x-auto">
+    <div className="glass-card rounded-3xl border border-white/40 overflow-hidden shadow-2xl shadow-brand-black/5 relative">
+      <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-white/10 pointer-events-none" />
+      <div className="overflow-x-auto relative z-10">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-brand-gray/50 border-b border-gray-200">
+            <tr className="border-b border-gray-200/50">
               <SortHeader label="Nama" field="nama" currentSort={sort} currentOrder={order} />
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Group</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Dimensi</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Hadap</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Tipe</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Lantai</th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">Group</th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">Dimensi</th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">Hadap</th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">Tipe</th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">Lantai</th>
               <SortHeader label="Harga" field="price" currentSort={sort} currentOrder={order} />
-              <th className="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Carport</th>
+              <th className="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">Carport</th>
               <SortHeader label="Status" field="status" currentSort={sort} currentOrder={order} />
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Siap</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Kawasan</th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">Siap</th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">Kawasan</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-gray-100/50">
             {properties.map((p) => (
               <tr
                 key={p.id}
-                className="hover:bg-brand-gold/5 transition-colors group"
+                className="hover:bg-white/60 transition-colors duration-300 group"
               >
                 <td className="px-4 py-3">
                   <Link

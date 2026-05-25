@@ -52,31 +52,63 @@ const VALUES = [
 export default function TentangKamiPage() {
   return (
     <>
-      {/* Page Hero */}
-      <section className="bg-brand-black py-20 sm:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold text-white">
-            Tentang <span className="text-brand-gold">Kami</span>
+      {/* Page Hero - Luxury Gradient */}
+      <section className="relative bg-brand-black py-24 sm:py-32 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-brand-gold/10 via-brand-black to-brand-black opacity-80" />
+        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-[0.02]" />
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-in-up">
+          <div className="inline-flex items-center justify-center p-2 bg-brand-gold/10 rounded-full mb-6 border border-brand-gold/20">
+            <span className="px-4 py-1 rounded-full bg-brand-gold/20 text-brand-gold text-sm font-bold tracking-widest uppercase">
+              Tentang Kami
+            </span>
+          </div>
+          <h1 className="text-5xl sm:text-6xl font-extrabold text-white tracking-tight mb-6">
+            Mengenal <span className="text-gradient">Lebih Dekat</span>
           </h1>
-          <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
-            Mengenal lebih dekat Prime Property dan komitmen kami dalam
-            menghadirkan properti terbaik untuk Anda.
+          <p className="mt-4 text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
+            Komitmen kami dalam menghadirkan properti terbaik dengan transparansi dan integritas tinggi.
           </p>
         </div>
       </section>
 
-      {/* Profile Section — 2 columns on desktop */}
-      <section className="py-20 sm:py-28">
+      {/* Profile Section — Modern Overlapping Layout */}
+      <section className="py-24 sm:py-32 bg-gray-50 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            {/* Text */}
-            <div>
-              <h2 className="text-3xl font-bold text-brand-black mb-6">
-                Profil Perusahaan
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            {/* Visual / Quote (Overlapping Left) */}
+            <div className="lg:col-span-5 relative z-10 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+              <div className="absolute -inset-4 bg-gradient-to-tr from-brand-gold/20 to-transparent blur-2xl rounded-3xl -z-10" />
+              <div className="glass-dark rounded-3xl p-10 sm:p-12 relative overflow-hidden group">
+                <div className="absolute inset-0 bg-brand-gold/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="flex items-center gap-3 mb-8 relative z-10">
+                  <Image
+                    src="/logo.png"
+                    alt="Prime Property Logo"
+                    width={56}
+                    height={56}
+                    className="drop-shadow-lg group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <span className="text-2xl font-extrabold text-white">
+                    Prime<span className="text-brand-gold">Property</span>
+                  </span>
+                </div>
+                <blockquote className="text-xl text-gray-200 italic leading-relaxed relative z-10">
+                  <span className="absolute -top-4 -left-2 text-6xl text-brand-gold/30 font-serif">"</span>
+                  Kami percaya bahwa setiap orang berhak mendapatkan informasi
+                  properti yang jelas, akurat, dan mudah diakses.
+                </blockquote>
+              </div>
+            </div>
+
+            {/* Text (Right Side) */}
+            <div className="lg:col-span-7 lg:pl-16 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+              <h2 className="text-4xl font-extrabold text-brand-black mb-8">
+                Profil <span className="text-brand-gold">Perusahaan</span>
               </h2>
-              <div className="space-y-4 text-gray-600 leading-relaxed">
+              <div className="space-y-6 text-gray-600 text-lg leading-relaxed">
                 <p>
-                  <strong className="text-brand-black">Prime Property</strong> adalah
+                  <strong className="text-brand-black font-bold">Prime Property</strong> adalah
                   perusahaan yang bergerak di bidang pemasaran dan pengelolaan properti
                   di wilayah Medan dan sekitarnya. Kami menyediakan pilihan ruko dan
                   villa berkualitas di lokasi-lokasi strategis.
@@ -94,47 +126,25 @@ export default function TentangKamiPage() {
                 </p>
               </div>
             </div>
-
-            {/* Visual / Quote */}
-            <div className="relative">
-              <div className="bg-brand-gray rounded-2xl p-10 sm:p-12">
-                <div className="flex items-center gap-3 mb-6">
-                  <Image
-                    src="/logo.png"
-                    alt="Prime Property Logo"
-                    width={48}
-                    height={48}
-                  />
-                  <span className="text-xl font-bold text-brand-black">
-                    Prime<span className="text-brand-gold">Property</span>
-                  </span>
-                </div>
-                <blockquote className="text-lg text-gray-700 italic leading-relaxed border-l-4 border-brand-gold pl-6">
-                  &ldquo;Kami percaya bahwa setiap orang berhak mendapatkan informasi
-                  properti yang jelas, akurat, dan mudah diakses.&rdquo;
-                </blockquote>
-              </div>
-              {/* Decorative accent */}
-              <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-brand-gold/10 rounded-2xl -z-10" />
-            </div>
           </div>
         </div>
       </section>
 
-      {/* Visi & Misi */}
-      <section className="py-20 sm:py-28 bg-brand-gray/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+      {/* Visi & Misi - Glassmorphism Cards */}
+      <section className="py-24 sm:py-32 relative overflow-hidden bg-white">
+        <div className="absolute top-1/2 left-0 w-96 h-96 bg-brand-gold/10 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2 opacity-50" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
             {/* Visi */}
-            <div className="bg-white rounded-2xl p-8 sm:p-10 border border-gray-100">
-              <div className="w-12 h-12 rounded-xl bg-brand-gold/10 text-brand-gold flex items-center justify-center mb-5">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <div className="group bg-white rounded-3xl p-10 sm:p-12 border border-gray-100 shadow-xl shadow-brand-black/5 hover:border-brand-gold/30 hover:-translate-y-2 transition-all duration-500 animate-fade-in-up">
+              <div className="w-16 h-16 rounded-2xl bg-brand-gray text-brand-gold flex items-center justify-center mb-8 group-hover:bg-brand-gold group-hover:text-white transition-all duration-500 shadow-sm">
+                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-brand-black mb-4">Visi</h3>
-              <p className="text-gray-600 leading-relaxed">
+              <h3 className="text-3xl font-extrabold text-brand-black mb-6 group-hover:text-brand-gold transition-colors">Visi</h3>
+              <p className="text-gray-600 text-lg leading-relaxed">
                 Menjadi platform properti digital terpercaya nomor satu di Medan
                 dan Sumatera Utara, yang menyajikan informasi properti secara
                 lengkap, transparan, dan mudah diakses oleh semua kalangan.
@@ -142,29 +152,29 @@ export default function TentangKamiPage() {
             </div>
 
             {/* Misi */}
-            <div className="bg-white rounded-2xl p-8 sm:p-10 border border-gray-100">
-              <div className="w-12 h-12 rounded-xl bg-brand-gold/10 text-brand-gold flex items-center justify-center mb-5">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <div className="group bg-white rounded-3xl p-10 sm:p-12 border border-gray-100 shadow-xl shadow-brand-black/5 hover:border-brand-gold/30 hover:-translate-y-2 transition-all duration-500 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+              <div className="w-16 h-16 rounded-2xl bg-brand-gray text-brand-gold flex items-center justify-center mb-8 group-hover:bg-brand-gold group-hover:text-white transition-all duration-500 shadow-sm">
+                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-brand-black mb-4">Misi</h3>
-              <ul className="space-y-3 text-gray-600">
-                <li className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-brand-gold mt-2 flex-shrink-0" />
+              <h3 className="text-3xl font-extrabold text-brand-black mb-6 group-hover:text-brand-gold transition-colors">Misi</h3>
+              <ul className="space-y-4 text-gray-600 text-lg">
+                <li className="flex items-start gap-3">
+                  <span className="w-2 h-2 rounded-full bg-brand-gold mt-2.5 flex-shrink-0" />
                   <span>Menyediakan data properti yang akurat dan terkini.</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-brand-gold mt-2 flex-shrink-0" />
+                <li className="flex items-start gap-3">
+                  <span className="w-2 h-2 rounded-full bg-brand-gold mt-2.5 flex-shrink-0" />
                   <span>Memberikan pelayanan profesional dan responsif kepada setiap klien.</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-brand-gold mt-2 flex-shrink-0" />
-                  <span>Memanfaatkan teknologi untuk mempermudah pencarian dan pengelolaan properti.</span>
+                <li className="flex items-start gap-3">
+                  <span className="w-2 h-2 rounded-full bg-brand-gold mt-2.5 flex-shrink-0" />
+                  <span>Memanfaatkan teknologi untuk mempermudah pencarian.</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-brand-gold mt-2 flex-shrink-0" />
-                  <span>Membangun hubungan jangka panjang berdasarkan kepercayaan dan transparansi.</span>
+                <li className="flex items-start gap-3">
+                  <span className="w-2 h-2 rounded-full bg-brand-gold mt-2.5 flex-shrink-0" />
+                  <span>Membangun hubungan jangka panjang berdasarkan kepercayaan.</span>
                 </li>
               </ul>
             </div>
@@ -173,31 +183,32 @@ export default function TentangKamiPage() {
       </section>
 
       {/* Company Values */}
-      <section className="py-20 sm:py-28">
+      <section className="py-24 sm:py-32 bg-gray-50 border-t border-gray-200/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <h2 className="text-3xl sm:text-4xl font-bold text-brand-black">
+          <div className="text-center max-w-3xl mx-auto mb-20 animate-fade-in-up">
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-brand-black tracking-tight">
               Nilai-Nilai <span className="text-brand-gold">Kami</span>
             </h2>
-            <p className="mt-4 text-gray-500 text-lg">
-              Prinsip yang menjadi landasan dalam setiap langkah kami.
+            <p className="mt-6 text-gray-500 text-lg sm:text-xl">
+              Prinsip utama yang menjadi landasan kokoh dalam setiap langkah pelayanan kami.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            {VALUES.map((v) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+            {VALUES.map((v, i) => (
               <div
                 key={v.title}
-                className="flex items-start gap-5 p-6 rounded-2xl bg-brand-gray/50 hover:bg-white hover:shadow-lg hover:shadow-brand-gold/5 border border-transparent hover:border-brand-gold/20 transition-all duration-300"
+                className="group flex flex-col sm:flex-row items-start gap-6 p-8 rounded-3xl bg-white border border-gray-100 hover:border-brand-gold/30 hover:shadow-2xl hover:shadow-brand-gold/10 hover:-translate-y-1 transition-all duration-400 animate-fade-in-up"
+                style={{ animationDelay: `${i * 100}ms` }}
               >
-                <div className="w-12 h-12 rounded-xl bg-brand-gold/10 text-brand-gold flex items-center justify-center flex-shrink-0">
+                <div className="w-16 h-16 rounded-2xl bg-brand-gray text-brand-gold flex items-center justify-center flex-shrink-0 group-hover:bg-brand-gold group-hover:text-white transition-all duration-300">
                   {v.icon}
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-brand-black mb-1.5">
+                  <h3 className="text-xl font-bold text-brand-black mb-3 group-hover:text-brand-gold transition-colors">
                     {v.title}
                   </h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">
+                  <p className="text-gray-500 text-base leading-relaxed">
                     {v.description}
                   </p>
                 </div>

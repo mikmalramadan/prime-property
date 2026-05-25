@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -21,6 +22,11 @@ interface MobileSidebarProps {
 
 export function MobileSidebar({ email, role, isSuperadmin }: MobileSidebarProps) {
   const [open, setOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   return (
     <>
@@ -37,7 +43,7 @@ export function MobileSidebar({ email, role, isSuperadmin }: MobileSidebarProps)
       </button>
 
       {/* Overlay + Drawer */}
-      {open && (
+      {open && mounted && createPortal(
         <div className="fixed inset-0 z-[60] lg:hidden">
           {/* Backdrop */}
           <div
@@ -106,7 +112,8 @@ export function MobileSidebar({ email, role, isSuperadmin }: MobileSidebarProps)
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   )

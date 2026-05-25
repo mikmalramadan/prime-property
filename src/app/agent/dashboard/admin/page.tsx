@@ -32,63 +32,64 @@ export default async function AdminPage() {
         <CreateAdminForm />
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="glass-card rounded-3xl border border-white/40 overflow-hidden shadow-2xl shadow-brand-black/5 relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-white/10 pointer-events-none" />
+        <div className="overflow-x-auto relative z-10">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-brand-gray/50 border-b border-gray-200">
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <tr className="border-b border-gray-200/50">
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">
                   Email
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">
                   Role
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">
                   Status
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">
                   Dibuat
                 </th>
-                <th className="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">
                   Aksi
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100/50">
               {profiles.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-4 py-12 text-center text-gray-400">
+                  <td colSpan={5} className="px-6 py-16 text-center text-gray-400 font-medium">
                     Belum ada admin terdaftar.
                   </td>
                 </tr>
               )}
               {profiles.map((p) => (
-                <tr key={p.id} className="hover:bg-brand-gold/5 transition-colors">
-                  <td className="px-4 py-3 font-medium text-brand-black">{p.email}</td>
-                  <td className="px-4 py-3">
+                <tr key={p.id} className="hover:bg-white/60 transition-colors duration-300">
+                  <td className="px-6 py-4 font-bold text-brand-black">{p.email}</td>
+                  <td className="px-6 py-4">
                     <span
-                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold tracking-wide ${
                         p.role === 'superadmin'
-                          ? 'bg-brand-gold/10 text-brand-gold'
-                          : 'bg-blue-100 text-blue-700'
+                          ? 'bg-brand-gold/10 text-brand-gold border border-brand-gold/20'
+                          : 'bg-blue-50 text-blue-600 border border-blue-200'
                       }`}
                     >
                       {p.role}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-6 py-4">
                     <span
-                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold tracking-wide ${
                         p.is_active
-                          ? 'bg-emerald-100 text-emerald-700'
-                          : 'bg-red-100 text-red-700'
+                          ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
+                          : 'bg-red-50 text-red-600 border border-red-200'
                       }`}
                     >
                       {p.is_active ? 'Aktif' : 'Nonaktif'}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-gray-500">{formatDate(p.created_at)}</td>
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-6 py-4 text-gray-500 font-medium">{formatDate(p.created_at)}</td>
+                  <td className="px-6 py-4 text-center">
                     <ToggleAdminStatus profileId={p.id} isActive={p.is_active} />
                   </td>
                 </tr>

@@ -20,20 +20,27 @@ export default async function DashboardLayout({
   const profile = await getCurrentProfile()
 
   // Defense-in-depth: middleware should catch this, but just in case
-  if (!profile || !profile.is_active) {
+  if (!profile) {
     redirect('/agent/login')
+  }
+
+  if (!profile.is_active) {
+    redirect('/agent/deactivated')
   }
 
   const isSuperadmin = profile.role === 'superadmin'
 
   return (
-    <div className="min-h-dvh flex bg-brand-gray">
+    <div className="min-h-dvh flex bg-brand-gray relative overflow-hidden">
+      {/* Decorative background glow for dashboard */}
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-brand-gold/5 rounded-full blur-[100px] pointer-events-none -z-10" />
+
       {/* Sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 bg-brand-black border-r border-white/5">
+      <aside className="hidden lg:flex flex-col w-64 glass-dark border-r border-white/5 relative z-10 shadow-2xl">
         {/* Sidebar header */}
         <div className="p-6 border-b border-white/5">
-          <Link href="/agent/dashboard" className="flex items-center gap-2.5">
-            <Image src="/logo.png" alt="Logo" width={28} height={28} className="rounded" />
+          <Link href="/agent/dashboard" className="flex items-center gap-2.5 group">
+            <Image src="/logo.png" alt="Logo" width={28} height={28} className="rounded group-hover:scale-110 transition-transform duration-300" />
             <span className="text-lg font-bold text-white tracking-tight">
               Prime<span className="text-brand-gold">Property</span>
             </span>
@@ -60,24 +67,24 @@ export default async function DashboardLayout({
           )}
         </nav>
 
-        {/* Sidebar footer — user info */}
+        {/* User info (bottom) */}
         <div className="p-4 border-t border-white/5">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-brand-gold/20 flex items-center justify-center text-brand-gold text-sm font-bold">
+          <div className="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/10">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-brand-gold/20 to-brand-gold/5 border border-brand-gold/20 flex items-center justify-center text-brand-gold text-sm font-bold shadow-inner">
               {profile.email[0].toUpperCase()}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm text-white truncate">{profile.email}</p>
-              <p className="text-xs text-gray-500 capitalize">{profile.role}</p>
+              <p className="text-sm text-white truncate font-medium">{profile.email}</p>
+              <p className="text-xs text-brand-gold capitalize tracking-wide">{profile.role}</p>
             </div>
           </div>
         </div>
       </aside>
 
       {/* Main area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 relative z-10">
         {/* Top header */}
-        <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200/50 h-16 flex items-center px-4 sm:px-6 lg:px-8 justify-between">
+        <header className="sticky top-0 z-40 glass-card border-b border-gray-200/50 h-16 flex items-center px-4 sm:px-6 lg:px-8 justify-between shadow-sm">
           {/* Mobile: hamburger + logo */}
           <div className="flex items-center gap-2 lg:hidden">
             <MobileSidebar

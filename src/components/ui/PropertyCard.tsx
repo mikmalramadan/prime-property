@@ -10,12 +10,14 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({ property, agentView = false }: PropertyCardProps) {
-  const cardClassName = "group block p-5 rounded-2xl bg-white border border-gray-100 hover:border-brand-gold/30 hover:shadow-lg hover:shadow-brand-gold/5 transition-all duration-300"
+  const cardClassName = "group block p-6 rounded-2xl bg-white border border-gray-100 hover:border-brand-gold/40 hover:shadow-2xl hover:shadow-brand-gold/10 hover:-translate-y-1 transition-all duration-400 relative overflow-hidden"
 
   const content = (
     <>
+      <div className="absolute inset-0 bg-gradient-to-br from-brand-gold/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+      
       {/* Top row: name + badges */}
-      <div className="flex items-start justify-between gap-3 mb-3">
+      <div className="relative flex items-start justify-between gap-3 mb-3">
         <div className="min-w-0 flex-1">
           <h3 className="font-bold text-brand-black text-base truncate group-hover:text-brand-gold transition-colors">
             {property.nama_property}
