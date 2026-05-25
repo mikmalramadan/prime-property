@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 }
 
 export default async function AdminPage() {
-  await requireRole('superadmin')
+  const { user } = await requireRole('superadmin')
 
   const supabase = await createClient()
   const { data } = await supabase
@@ -90,7 +90,13 @@ export default async function AdminPage() {
                   </td>
                   <td className="px-6 py-4 text-gray-500 font-medium">{formatDate(p.created_at)}</td>
                   <td className="px-6 py-4 text-center">
-                    <ToggleAdminStatus profileId={p.id} isActive={p.is_active} />
+                    {p.id === user.id ? (
+                      <span className="inline-block px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-400 bg-gray-50 border border-gray-200">
+                        Akun Anda
+                      </span>
+                    ) : (
+                      <ToggleAdminStatus profileId={p.id} email={p.email} isActive={p.is_active} />
+                    )}
                   </td>
                 </tr>
               ))}

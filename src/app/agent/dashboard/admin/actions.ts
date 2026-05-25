@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { requireRole } from '@/lib/auth'
+import { requireRole, getCurrentUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
 /**
@@ -10,6 +10,11 @@ import { revalidatePath } from 'next/cache'
  */
 export async function toggleAdminStatus(profileId: string, currentlyActive: boolean) {
   await requireRole('superadmin')
+
+  const user = await getCurrentUser()
+  if (user && user.id === profileId) {
+    throw new Error('Anda tidak dapat menonaktifkan akun Anda sendiri.')
+  }
 
   const supabase = await createClient()
 
@@ -44,8 +49,27 @@ export async function createAdmin(
     return { error: 'Email wajib diisi.' }
   }
 
+  // Basic email regex validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(email)) {
+    return { error: 'Format email tidak valid.' }
+  }
+
   if (!['admin', 'superadmin'].includes(role)) {
     return { error: 'Role tidak valid.' }
+  }
+
+  const supabase = await createClient()
+
+  // Check if email already exists in profiles
+  const { data: existingProfile } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('email', email)
+    .single()
+
+  if (existingProfile) {
+    return { error: 'Email sudah terdaftar.' }
   }
 
   // NOTE: In production, use the service_role key + admin.auth.createUser()

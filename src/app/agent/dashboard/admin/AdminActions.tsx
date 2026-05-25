@@ -1,47 +1,11 @@
 'use client'
 
-import { useTransition, useActionState, useState } from 'react'
-import { toggleAdminStatus, createAdmin, type CreateAdminState } from './actions'
+import { useActionState, useState } from 'react'
+import { createAdmin, type CreateAdminState } from './actions'
 import { toast } from '@/components/ui/Toast'
+import { ToggleStatusModal } from '@/components/admin/ToggleStatusModal'
 
-// ---------------------------------------------------------------------------
-// Toggle status button
-// ---------------------------------------------------------------------------
-
-export function ToggleAdminStatus({
-  profileId,
-  isActive,
-}: {
-  profileId: string
-  isActive: boolean
-}) {
-  const [isPending, startTransition] = useTransition()
-
-  const handleToggle = () => {
-    startTransition(async () => {
-      await toggleAdminStatus(profileId, isActive)
-      toast(
-        isActive ? 'Admin dinonaktifkan.' : 'Admin diaktifkan kembali.',
-        isActive ? 'error' : 'success',
-      )
-    })
-  }
-
-  return (
-    <button
-      type="button"
-      onClick={handleToggle}
-      disabled={isPending}
-      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all disabled:opacity-50 ${
-        isActive
-          ? 'text-brand-red bg-red-50 hover:bg-red-100'
-          : 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100'
-      }`}
-    >
-      {isPending ? '...' : isActive ? 'Nonaktifkan' : 'Aktifkan'}
-    </button>
-  )
-}
+export { ToggleStatusModal as ToggleAdminStatus }
 
 // ---------------------------------------------------------------------------
 // Create admin form (modal-like inline form)
