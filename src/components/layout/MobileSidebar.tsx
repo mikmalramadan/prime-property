@@ -56,7 +56,7 @@ export function MobileSidebar({ email, role, isSuperadmin }: MobileSidebarProps)
           <div className="absolute left-0 top-0 bottom-0 w-72 bg-brand-black shadow-2xl flex flex-col animate-slide-in-left">
             {/* Header */}
             <div className="p-5 border-b border-white/5 flex items-center justify-between">
-              <Link href="/agent/dashboard" className="flex items-center gap-2" onClick={() => setOpen(false)}>
+              <Link href="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
                 <Image src="/logo.png" alt="Logo" width={28} height={28} className="rounded" />
                 <span className="text-lg font-bold text-white tracking-tight">
                   Prime<span className="text-brand-gold">Property</span>

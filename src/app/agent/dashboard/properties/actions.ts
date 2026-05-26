@@ -72,8 +72,8 @@ function validateProperty(formData: FormData): Record<string, string> | null {
   }
 
   const mapsLink = (formData.get('maps_link') as string)?.trim()
-  if (mapsLink && !mapsLink.includes('google.com/maps')) {
-    errors.maps_link = 'Link harus berisi google.com/maps.'
+  if (mapsLink && !mapsLink.includes('google.com/maps') && !mapsLink.includes('maps.app.goo.gl')) {
+    errors.maps_link = 'Link harus valid dari Google Maps (google.com/maps atau maps.app.goo.gl).'
   }
 
   return Object.keys(errors).length > 0 ? errors : null

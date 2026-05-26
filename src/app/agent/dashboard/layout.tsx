@@ -39,7 +39,7 @@ export default async function DashboardLayout({
       <aside className="hidden lg:flex flex-col w-64 bg-brand-black border-r border-white/5 relative z-10 shadow-2xl">
         {/* Sidebar header */}
         <div className="p-6 border-b border-white/5">
-          <Link href="/agent/dashboard" className="flex items-center gap-2.5 group">
+          <Link href="/" className="flex items-center gap-2.5 group">
             <Image src="/logo.png" alt="Logo" width={28} height={28} className="rounded group-hover:scale-110 transition-transform duration-300" />
             <span className="text-lg font-bold text-white tracking-tight">
               Prime<span className="text-brand-gold">Property</span>
@@ -92,10 +92,12 @@ export default async function DashboardLayout({
               role={profile.role}
               isSuperadmin={isSuperadmin}
             />
-            <Image src="/logo.png" alt="Logo" width={24} height={24} className="rounded" />
-            <span className="text-base font-bold text-brand-black tracking-tight">
-              Prime<span className="text-brand-gold">Property</span>
-            </span>
+            <Link href="/" className="flex items-center gap-2">
+              <Image src="/logo.png" alt="Logo" width={24} height={24} className="rounded" />
+              <span className="text-base font-bold text-brand-black tracking-tight">
+                Prime<span className="text-brand-gold">Property</span>
+              </span>
+            </Link>
           </div>
 
           {/* Spacer for desktop */}

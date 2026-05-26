@@ -289,7 +289,7 @@ export function PropertyForm({ action, initialData, submitLabel = 'Simpan' }: Pr
             name="maps_link"
             type="url"
             defaultValue={initialData?.maps_link ?? ''}
-            placeholder="https://www.google.com/maps/..."
+            placeholder="https://maps.app.goo.gl/..."
             error={state?.errors?.maps_link}
           />
         </div>
