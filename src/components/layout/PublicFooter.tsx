@@ -14,8 +14,9 @@ export function PublicFooter() {
               <Image
                 src="/logo.png"
                 alt="Prime Property Logo"
-                width={40}
-                height={40}
+                width={200}
+                height={48}
+                className="rounded bg-white p-1 h-10 w-auto object-contain"
               />
               <span className="text-xl font-bold text-white tracking-tight">
                 Prime<span className="text-brand-gold">Property</span>

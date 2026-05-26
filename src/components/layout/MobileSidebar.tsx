@@ -57,7 +57,7 @@ export function MobileSidebar({ email, role, isSuperadmin }: MobileSidebarProps)
             {/* Header */}
             <div className="p-5 border-b border-white/5 flex items-center justify-between">
               <Link href="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
-                <Image src="/logo.png" alt="Logo" width={28} height={28} className="rounded" />
+                <Image src="/logo.png" alt="Logo" width={120} height={28} className="rounded h-7 w-auto object-contain bg-white/10 p-1" />
                 <span className="text-lg font-bold text-white tracking-tight">
                   Prime<span className="text-brand-gold">Property</span>
                 </span>

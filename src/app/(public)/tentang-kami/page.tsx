@@ -82,9 +82,9 @@ export default function TentangKamiPage() {
                   <Image
                     src="/logo.png"
                     alt="Prime Property Logo"
-                    width={56}
-                    height={56}
-                    className="drop-shadow-lg group-hover:scale-110 transition-transform duration-500"
+                    width={200}
+                    height={48}
+                    className="rounded h-12 w-auto object-contain mx-auto lg:mx-0 drop-shadow-lg group-hover:scale-110 transition-transform duration-500"
                   />
                   <span className="text-2xl font-extrabold text-white">
                     Prime<span className="text-brand-gold">Property</span>

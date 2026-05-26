@@ -25,9 +25,9 @@ export function PublicHeader() {
             <Image
               src="/logo.png"
               alt="Prime Property Logo"
-              width={32}
-              height={32}
-              className="rounded"
+              width={180}
+              height={40}
+              className="rounded h-8 w-auto object-contain"
             />
             <Link href="/" className="font-bold text-xl text-brand-black tracking-tight">
               Prime<span className="text-brand-gold">Property</span>

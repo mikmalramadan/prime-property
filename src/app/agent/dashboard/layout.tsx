@@ -40,7 +40,7 @@ export default async function DashboardLayout({
         {/* Sidebar header */}
         <div className="p-6 border-b border-white/5">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <Image src="/logo.png" alt="Logo" width={28} height={28} className="rounded group-hover:scale-110 transition-transform duration-300" />
+            <Image src="/logo.png" alt="Logo" width={150} height={32} className="rounded group-hover:scale-105 transition-transform duration-300 h-8 w-auto object-contain bg-white/10 p-1" />
             <span className="text-lg font-bold text-white tracking-tight">
               Prime<span className="text-brand-gold">Property</span>
             </span>
@@ -93,7 +93,7 @@ export default async function DashboardLayout({
               isSuperadmin={isSuperadmin}
             />
             <Link href="/" className="flex items-center gap-2">
-              <Image src="/logo.png" alt="Logo" width={24} height={24} className="rounded" />
+              <Image src="/logo.png" alt="Logo" width={120} height={28} className="rounded h-7 w-auto object-contain" />
               <span className="text-base font-bold text-brand-black tracking-tight">
                 Prime<span className="text-brand-gold">Property</span>
               </span>

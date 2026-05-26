@@ -3,6 +3,7 @@
 import { useActionState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 import { signIn, type LoginFormState } from './actions'
 
 export function LoginForm() {
@@ -22,18 +23,18 @@ export function LoginForm() {
       <div className="relative w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-10">
-          <div className="flex items-center justify-center gap-3 mb-3">
+          <Link href="/" className="inline-flex items-center justify-center gap-3 mb-3 hover:opacity-80 transition-opacity">
             <Image
               src="/logo.png"
               alt="Prime Property Logo"
-              width={48}
+              width={200}
               height={48}
-              className="drop-shadow-lg"
+              className="rounded h-12 w-auto object-contain bg-white/5 p-1"
             />
             <span className="text-2xl font-bold text-white tracking-tight">
               Prime<span className="text-brand-gold">Property</span>
             </span>
-          </div>
+          </Link>
           <p className="text-gray-500 text-sm">
             Portal Internal Agent
           </p>
