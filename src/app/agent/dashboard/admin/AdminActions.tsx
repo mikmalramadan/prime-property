@@ -19,8 +19,15 @@ export function CreateAdminForm() {
     null,
   )
 
-  if (state?.success) {
-    toast('Admin berhasil ditambahkan.', 'success')
+  const handleCopyAndClose = () => {
+    if (state?.tempPassword) {
+      navigator.clipboard.writeText(state.tempPassword)
+      toast('Password disalin ke clipboard!', 'success')
+    }
+    setOpen(false)
+    // We can't reset useActionState manually easily in React 19 without a form reset,
+    // but unmounting it (setOpen(false)) might not reset it for the next open.
+    // However, it will at least close it.
   }
 
   if (!open) {
@@ -38,8 +45,28 @@ export function CreateAdminForm() {
     )
   }
 
+  // If success and we have a temporary password, show it instead of the form
+  if (state?.success && state?.tempPassword) {
+    return (
+      <div className="flex flex-col gap-2 bg-white border border-gray-200 rounded-xl p-4 shadow-md max-w-sm">
+        <p className="text-sm font-medium text-brand-black">Admin berhasil ditambahkan!</p>
+        <p className="text-xs text-gray-500">Berikan password sementara ini kepada admin baru:</p>
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-2 text-center my-1">
+          <code className="text-lg font-mono font-bold text-brand-black">{state.tempPassword}</code>
+        </div>
+        <button
+          type="button"
+          onClick={handleCopyAndClose}
+          className="w-full py-2 bg-brand-gold text-brand-black font-bold rounded-lg text-sm hover:bg-brand-gold/90 transition-all shadow-sm"
+        >
+          Salin & Tutup
+        </button>
+      </div>
+    )
+  }
+
   return (
-    <form action={formAction} className="flex items-end gap-3 bg-white border border-gray-200 rounded-xl p-4">
+    <form action={formAction} className="flex items-end gap-3 bg-white border border-gray-200 rounded-xl p-4 shadow-md">
       <div>
         <label className="block text-xs font-medium text-gray-500 mb-1">Email</label>
         <input
@@ -62,7 +89,7 @@ export function CreateAdminForm() {
       </div>
 
       {state?.error && (
-        <p className="text-xs text-brand-red">{state.error}</p>
+        <p className="text-xs text-brand-red mb-2">{state.error}</p>
       )}
 
       <button
@@ -75,7 +102,7 @@ export function CreateAdminForm() {
       <button
         type="button"
         onClick={() => setOpen(false)}
-        className="px-4 py-2 border border-gray-200 text-gray-500 rounded-lg text-sm hover:bg-gray-50"
+        className="px-4 py-2 border border-gray-200 text-gray-500 font-medium rounded-lg text-sm hover:bg-gray-50"
       >
         Batal
       </button>

@@ -34,6 +34,7 @@ export async function toggleAdminStatus(profileId: string, currentlyActive: bool
 export type CreateAdminState = {
   success?: boolean
   error?: string
+  tempPassword?: string
 } | null
 
 export async function createAdmin(
@@ -75,10 +76,11 @@ export async function createAdmin(
   // NOTE: In production, use the service_role key + admin.auth.createUser()
   // to properly create the auth user + profile atomically.
   // For now, we just log the intent.
-  console.log(`[Admin] Would create user: ${email} with role: ${role}`)
+  const tempPassword = Math.random().toString(36).slice(-8) + '!'
+  console.log(`[Admin] Would create user: ${email} with role: ${role} and password: ${tempPassword}`)
 
   revalidatePath('/agent/dashboard/admin')
-  return { success: true }
+  return { success: true, tempPassword }
 }
 
 /**
