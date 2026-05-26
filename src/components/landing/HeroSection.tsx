@@ -12,19 +12,7 @@ export function HeroSection() {
         <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-20">
           {/* Text Content */}
           <div className="flex-1 text-center lg:text-left z-10">
-            {/* Animated Logo Accent */}
-            <div className="mb-8 flex justify-center lg:justify-start animate-fade-in-up" style={{ animationDelay: '100ms' }}>
-              <div className="relative">
-                <div className="absolute inset-0 bg-brand-gold/30 blur-2xl rounded-full" />
-                <Image
-                  src="/logo.png"
-                  alt="Prime Property Logo"
-                  width={80}
-                  height={80}
-                  className="relative drop-shadow-2xl hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-            </div>
+
 
             {/* Glowing Text */}
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-[1.15] tracking-tight animate-fade-in-up" style={{ animationDelay: '200ms' }}>

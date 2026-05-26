@@ -58,11 +58,7 @@ export default function TentangKamiPage() {
         <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-[0.02]" />
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-in-up">
-          <div className="inline-flex items-center justify-center p-2 bg-brand-gold/10 rounded-full mb-6 border border-brand-gold/20">
-            <span className="px-4 py-1 rounded-full bg-brand-gold/20 text-brand-gold text-sm font-bold tracking-widest uppercase">
-              Tentang Kami
-            </span>
-          </div>
+
           <h1 className="text-5xl sm:text-6xl font-extrabold text-white tracking-tight mb-6">
             Mengenal <span className="text-gradient">Lebih Dekat</span>
           </h1>

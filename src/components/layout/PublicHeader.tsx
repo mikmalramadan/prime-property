@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 
 const NAV_LINKS = [
   { href: '/', label: 'Beranda' },
@@ -12,6 +13,7 @@ const NAV_LINKS = [
 
 export function PublicHeader() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const pathname = usePathname()
 
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-brand-gray/50 shadow-sm">
@@ -34,15 +36,24 @@ export function PublicHeader() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8 items-center">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-brand-black hover:text-brand-gold transition-colors font-medium text-sm"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {NAV_LINKS.map((link) => {
+              const isActive = pathname === link.href
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`transition-colors font-medium text-sm relative py-2 ${
+                    isActive ? 'text-brand-gold' : 'text-brand-black hover:text-brand-gold'
+                  }`}
+                >
+                  {link.label}
+                  {/* Underline indicator */}
+                  {isActive && (
+                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-brand-gold rounded-full" />
+                  )}
+                </Link>
+              )
+            })}
           </nav>
 
           {/* Right side: Login button + hamburger */}
