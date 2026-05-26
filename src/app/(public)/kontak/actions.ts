@@ -1,5 +1,33 @@
 'use server'
 
+import { headers } from 'next/headers'
+
+// ---------------------------------------------------------------------------
+// Rate Limiter (In-Memory for Demo)
+// ---------------------------------------------------------------------------
+// Tracks { count: number, resetAt: number } per IP
+const contactRateLimit = new Map<string, { count: number; resetAt: number }>()
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now()
+  const record = contactRateLimit.get(ip)
+
+  if (!record || now > record.resetAt) {
+    // New IP or reset period has passed (1 hour)
+    contactRateLimit.set(ip, { count: 1, resetAt: now + 60 * 60 * 1000 })
+    return true
+  }
+
+  if (record.count >= 3) {
+    // Exceeded 3 requests per hour
+    return false
+  }
+
+  // Increment count
+  record.count += 1
+  return true
+}
+
 // ---------------------------------------------------------------------------
 // Contact form server action
 // ---------------------------------------------------------------------------
@@ -17,9 +45,7 @@ export type ContactFormState = {
 
 /**
  * Validate and process contact form submission.
- *
- * For now this stores nothing (no DB table yet) — it validates and returns
- * success. Phase 2 can add a `contact_messages` table or email delivery.
+ * Includes Anti-Spam (max 3/hour/IP) and mock email notification.
  */
 export async function submitContact(
   _prevState: ContactFormState,
@@ -31,6 +57,19 @@ export async function submitContact(
   const pesan = (formData.get('pesan') as string)?.trim() ?? ''
 
   const errors: NonNullable<ContactFormState>['errors'] = {}
+
+  // --- Rate Limiting (Anti-Spam) ---
+  // In Next.js App Router, headers() needs to be awaited in newer versions or used synchronously in 13.
+  // Next 14+ requires `const headersList = await headers()` in some contexts. Let's use it safely.
+  const headersList = await headers()
+  const ip = headersList.get('x-forwarded-for') || headersList.get('x-real-ip') || 'unknown-ip'
+
+  if (!checkRateLimit(ip)) {
+    return { 
+      success: false, 
+      errors: { server: 'Terlalu banyak permintaan (maksimal 3 per jam). Silakan coba lagi nanti.' } 
+    }
+  }
 
   // --- Validation ---
 
@@ -56,10 +95,13 @@ export async function submitContact(
     return { success: false, errors }
   }
 
-  // --- Process ---
-  // TODO: Store in `contact_messages` table or send email via Resend/SendGrid.
-  // For now, log and return success.
-  console.log('[Contact Form]', { nama, email, phone, pesan })
+  // --- Process (Mock Email Notification) ---
+  console.log('=========================================')
+  console.log('📧 [MOCK EMAIL NOTIFICATION SENT]')
+  console.log(`To: admin@primeproperty.id`)
+  console.log(`Subject: 📬 Pesan Baru dari ${nama} (${email})`)
+  console.log(`Body:\nNomor HP: ${phone}\n\nPesan:\n${pesan}`)
+  console.log('=========================================')
 
   return { success: true }
 }

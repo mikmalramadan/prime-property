@@ -324,7 +324,7 @@ export function PropertyForm({ action, initialData, submitLabel = 'Simpan' }: Pr
 }
 
 // ---------------------------------------------------------------------------
-// Form field component
+// Form field component (with Dirty State Indicator)
 // ---------------------------------------------------------------------------
 
 function FormField({
@@ -348,10 +348,17 @@ function FormField({
   error?: string
   step?: string
 }) {
+  const initialValue = defaultValue ?? ''
+  const [value, setValue] = useState<string | number>(initialValue)
+
+  // Compare as string to handle number conversions easily
+  const isDirty = String(value) !== String(initialValue)
+
   return (
-    <div>
-      <label htmlFor={name} className="block text-sm font-medium text-brand-black mb-1.5">
-        {label} {required && <span className="text-brand-red">*</span>}
+    <div className="relative">
+      <label htmlFor={name} className="block text-sm font-medium text-brand-black mb-1.5 flex justify-between items-center">
+        <span>{label} {required && <span className="text-brand-red">*</span>}</span>
+        {isDirty && <span className="text-[10px] font-bold text-brand-gold bg-brand-gold/10 px-2 py-0.5 rounded-full uppercase tracking-wider animate-scale-in">Telah Diubah</span>}
       </label>
       <input
         id={name}
@@ -359,12 +366,18 @@ function FormField({
         type={type}
         required={required}
         step={step}
-        defaultValue={defaultValue ?? ''}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
         placeholder={placeholder}
-        className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm text-brand-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/50 focus:border-brand-gold transition-all"
+        className={`w-full px-4 py-2.5 rounded-lg border text-sm text-brand-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all ${
+          isDirty 
+            ? 'border-brand-gold bg-brand-gold/5 focus:border-brand-gold shadow-[0_0_10px_rgba(201,169,97,0.1)]' 
+            : 'border-gray-200 bg-white focus:border-brand-gold'
+        }`}
       />
       {hint && <p className="mt-1 text-xs text-gray-400">{hint}</p>}
       {error && <p className="mt-1 text-xs text-brand-red">{error}</p>}
     </div>
   )
 }
+

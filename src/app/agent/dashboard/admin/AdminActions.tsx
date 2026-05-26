@@ -4,8 +4,9 @@ import { useActionState, useState } from 'react'
 import { createAdmin, type CreateAdminState } from './actions'
 import { toast } from '@/components/ui/Toast'
 import { ToggleStatusModal } from '@/components/admin/ToggleStatusModal'
+import { ResetPasswordModal } from '@/components/admin/ResetPasswordModal'
 
-export { ToggleStatusModal as ToggleAdminStatus }
+export { ToggleStatusModal as ToggleAdminStatus, ResetPasswordModal }
 
 // ---------------------------------------------------------------------------
 // Create admin form (modal-like inline form)

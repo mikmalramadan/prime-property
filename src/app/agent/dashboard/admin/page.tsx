@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { requireRole } from '@/lib/auth'
 import { formatDate } from '@/lib/format'
 import type { ProfileRow } from '@/types/database'
-import { ToggleAdminStatus, CreateAdminForm } from './AdminActions'
+import { ToggleAdminStatus, CreateAdminForm, ResetPasswordModal } from './AdminActions'
 
 export const metadata: Metadata = {
   title: 'Kelola Admin — Dashboard',
@@ -90,13 +90,18 @@ export default async function AdminPage() {
                   </td>
                   <td className="px-6 py-4 text-gray-500 font-medium">{formatDate(p.created_at)}</td>
                   <td className="px-6 py-4 text-center">
-                    {p.id === user.id ? (
-                      <span className="inline-block px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-400 bg-gray-50 border border-gray-200">
-                        Akun Anda
-                      </span>
-                    ) : (
-                      <ToggleAdminStatus profileId={p.id} email={p.email} isActive={p.is_active} />
-                    )}
+                    <div className="flex items-center justify-center gap-2">
+                      {p.id === user.id ? (
+                        <span className="inline-block px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-400 bg-gray-50 border border-gray-200">
+                          Akun Anda
+                        </span>
+                      ) : (
+                        <>
+                          <ToggleAdminStatus profileId={p.id} email={p.email} isActive={p.is_active} />
+                          <ResetPasswordModal profileId={p.id} email={p.email} />
+                        </>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
