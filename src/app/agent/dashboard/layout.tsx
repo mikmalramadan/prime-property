@@ -36,7 +36,7 @@ export default async function DashboardLayout({
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-brand-gold/5 rounded-full blur-[100px] pointer-events-none -z-10" />
 
       {/* Sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 glass-dark border-r border-white/5 relative z-10 shadow-2xl">
+      <aside className="hidden lg:flex flex-col w-64 bg-brand-black border-r border-white/5 relative z-10 shadow-2xl">
         {/* Sidebar header */}
         <div className="p-6 border-b border-white/5">
           <Link href="/agent/dashboard" className="flex items-center gap-2.5 group">

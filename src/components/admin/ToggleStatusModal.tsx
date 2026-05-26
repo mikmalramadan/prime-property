@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { toggleAdminStatus } from '@/app/agent/dashboard/admin/actions'
 import { toast } from '@/components/ui/Toast'
 
@@ -13,6 +14,12 @@ interface ToggleStatusModalProps {
 export function ToggleStatusModal({ profileId, email, isActive }: ToggleStatusModalProps) {
   const [open, setOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
+  const [mounted, setMounted] = useState(false)
+
+  // Ensure portal only renders on client
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleToggle = () => {
     startTransition(async () => {
@@ -49,8 +56,8 @@ export function ToggleStatusModal({ profileId, email, isActive }: ToggleStatusMo
       </button>
 
       {/* Modal overlay */}
-      {open && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+      {open && mounted && createPortal(
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
@@ -116,7 +123,8 @@ export function ToggleStatusModal({ profileId, email, isActive }: ToggleStatusMo
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   )

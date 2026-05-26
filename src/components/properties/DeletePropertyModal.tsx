@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useRouter } from 'next/navigation'
 import { deleteProperty } from '@/app/agent/dashboard/properties/actions'
 import { toast } from '@/components/ui/Toast'
@@ -13,7 +14,12 @@ interface DeletePropertyModalProps {
 export function DeletePropertyButton({ propertyId, propertyName }: DeletePropertyModalProps) {
   const [open, setOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
+  const [mounted, setMounted] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleDelete = () => {
     startTransition(async () => {
@@ -42,8 +48,8 @@ export function DeletePropertyButton({ propertyId, propertyName }: DeletePropert
       </button>
 
       {/* Modal overlay */}
-      {open && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+      {open && mounted && createPortal(
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -84,8 +90,10 @@ export function DeletePropertyButton({ propertyId, propertyName }: DeletePropert
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   )
 }
+
