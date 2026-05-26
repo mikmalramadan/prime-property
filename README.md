@@ -1,36 +1,197 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Prime Property
 
-## Getting Started
+Platform digital manajemen dan pemasaran properti untuk ruko dan villa di wilayah Medan dan sekitarnya. Dibangun dengan Next.js 16, Supabase, dan Tailwind CSS.
 
-First, run the development server:
+---
+
+## ✨ Fitur Utama
+
+- **Landing Page Publik** — Halaman beranda, tentang kami, dan kontak yang responsif dengan animasi premium
+- **Portal Agent** — Dashboard internal untuk mengelola listing properti dengan autentikasi yang aman
+- **Manajemen Properti** — CRUD lengkap dengan filter, pencarian, pengurutan, dan soft-delete
+- **Panel Admin** — Manajemen pengguna/agent dengan kontrol peran (admin & superadmin)
+- **Audit Log** — Riwayat lengkap setiap perubahan data properti
+- **Rate Limiting** — Pembatasan login (15 menit lockout) dan filter spam kontak
+- **SEO-Ready** — Meta tag, sitemap, dan robots.txt otomatis
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Teknologi |
+|-------|-----------|
+| Framework | [Next.js 16](https://nextjs.org) (App Router + Server Actions) |
+| Database & Auth | [Supabase](https://supabase.com) (PostgreSQL + RLS) |
+| Styling | [Tailwind CSS v4](https://tailwindcss.com) |
+| Language | TypeScript |
+| Runtime | Node.js 18+ |
+
+---
+
+## 🚀 Cara Menjalankan Proyek
+
+### 1. Prasyarat
+
+Pastikan sudah terinstall:
+- **Node.js** versi 18 atau lebih baru → [nodejs.org](https://nodejs.org)
+- **npm** (sudah termasuk bersama Node.js)
+- Akun **Supabase** → [supabase.com](https://supabase.com)
+
+### 2. Clone Repository
+
+```bash
+git clone <url-repository-ini>
+cd prime-property
+```
+
+### 3. Install Dependensi
+
+```bash
+npm install
+```
+
+### 4. Setup Supabase
+
+#### a. Buat Proyek Supabase Baru
+
+1. Buka [app.supabase.com](https://app.supabase.com)
+2. Klik **New Project** dan isi nama, password database, dan region
+3. Tunggu hingga proyek selesai dibuat (±2 menit)
+
+#### b. Jalankan Migrasi Database
+
+1. Buka **SQL Editor** di dashboard Supabase Anda
+2. Salin isi file `supabase/migrations/001_init.sql`
+3. Tempel dan klik **Run** untuk menjalankan schema
+
+> **Catatan:** Jika ingin mendukung format link Google Maps singkat (`maps.app.goo.gl`), jalankan juga skrip berikut di SQL Editor:
+> ```sql
+> ALTER TABLE properties DROP CONSTRAINT IF EXISTS properties_maps_link_check;
+> ALTER TABLE properties ADD CONSTRAINT properties_maps_link_check
+>   CHECK (
+>     maps_link IS NULL OR
+>     maps_link LIKE '%google.com/maps%' OR
+>     maps_link LIKE '%maps.app.goo.gl%'
+>   );
+> ```
+
+#### c. Buat Pengguna Pertama (Superadmin)
+
+1. Di dashboard Supabase, buka **Authentication → Users**
+2. Klik **Add User** dan isi email serta password
+3. Salin `UUID` pengguna yang baru dibuat
+4. Buka **SQL Editor** dan jalankan:
+   ```sql
+   INSERT INTO profiles (id, email, role)
+   VALUES ('<uuid-pengguna>', '<email>', 'superadmin');
+   ```
+
+### 5. Konfigurasi Environment Variables
+
+Buat file `.env.local` di root proyek:
+
+```bash
+cp .env.example .env.local   # jika ada contohnya
+# atau buat manual
+```
+
+Isi dengan kredensial dari dashboard Supabase Anda (**Settings → API**):
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://<project-id>.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon-public-key>
+SUPABASE_SERVICE_ROLE_KEY=<service-role-secret-key>
+```
+
+| Variable | Lokasi di Supabase | Kegunaan |
+|----------|--------------------|----------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Settings → API → Project URL | URL endpoint Supabase |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Settings → API → anon public | Akses publik (RLS aktif) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Settings → API → service_role secret | Akses server-side penuh (bypass RLS) |
+
+> ⚠️ **Jangan commit file `.env.local`** — file ini sudah terdaftar di `.gitignore`
+>
+> 🔒 **`SUPABASE_SERVICE_ROLE_KEY` bersifat rahasia** — jangan pernah diekspos di sisi client (`NEXT_PUBLIC_*`). Key ini hanya digunakan di Server Actions dan API routes.
+
+### 6. Jalankan Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka browser dan akses: **[http://localhost:3000](http://localhost:3000)**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Halaman publik: `http://localhost:3000`
+- Portal agent: `http://localhost:3000/agent/login`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 📁 Struktur Proyek
 
-To learn more about Next.js, take a look at the following resources:
+```
+prime-property/
+├── public/                  # Aset statis (logo, gambar background)
+├── src/
+│   ├── app/                 # Next.js App Router
+│   │   ├── (public)/        # Halaman publik (beranda, tentang, kontak)
+│   │   ├── agent/           # Portal agent (login, dashboard)
+│   │   └── layout.tsx       # Root layout & metadata global
+│   ├── components/          # Komponen UI yang dapat digunakan ulang
+│   │   ├── admin/           # Komponen panel admin
+│   │   ├── contact/         # Form kontak
+│   │   ├── landing/         # Komponen halaman beranda
+│   │   ├── layout/          # Header, footer, sidebar
+│   │   ├── properties/      # Tabel, form, filter properti
+│   │   └── ui/              # Komponen generik (badge, card, dll.)
+│   ├── lib/                 # Utility (Supabase client, format, helper)
+│   └── types/               # Definisi TypeScript
+└── supabase/
+    └── migrations/          # File migrasi database SQL
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📦 Scripts yang Tersedia
 
-## Deploy on Vercel
+```bash
+npm run dev      # Jalankan server development (hot reload)
+npm run build    # Build untuk production
+npm run start    # Jalankan build production secara lokal
+npm run lint     # Cek kualitas kode dengan ESLint
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🗄️ Skema Database
+
+| Tabel | Deskripsi |
+|-------|-----------|
+| `profiles` | Data pengguna/agent (terhubung ke Supabase Auth) |
+| `properties` | Data listing properti dengan soft-delete |
+| `audit_logs` | Log setiap perubahan properti (create/update/delete) |
+
+**Row Level Security (RLS):**
+- Publik hanya dapat **membaca** properti yang belum dihapus
+- Pengguna terautentikasi mendapat akses **penuh** ke semua data
+
+---
+
+## 🌐 Routes
+
+| Path | Akses | Keterangan |
+|------|-------|-----------|
+| `/` | Publik | Halaman beranda |
+| `/tentang-kami` | Publik | Profil perusahaan |
+| `/kontak` | Publik | Form kontak |
+| `/agent/login` | Publik | Halaman masuk portal |
+| `/agent/dashboard` | Agent | Overview & statistik |
+| `/agent/dashboard/properties` | Agent | Daftar properti |
+| `/agent/dashboard/properties/new` | Agent | Tambah properti |
+| `/agent/dashboard/admin` | Admin/Superadmin | Manajemen pengguna |
+| `/agent/dashboard/audit` | Admin/Superadmin | Log audit |
+
+---
+
+## 📄 Lisensi
+
+Proyek ini bersifat privat dan dikembangkan untuk keperluan internal **Prime Property**.
