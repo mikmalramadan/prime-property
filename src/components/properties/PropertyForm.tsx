@@ -263,21 +263,56 @@ export function PropertyForm({ action, initialData, submitLabel = 'Simpan' }: Pr
           <label className="block text-sm font-medium text-brand-black mb-1.5">
             Kawasan <span className="text-brand-red">*</span>
           </label>
-          <div className="flex flex-wrap gap-1.5">
-            {KAWASAN_OPTIONS.map((k) => (
-              <button
-                key={k}
-                type="button"
-                onClick={() => toggleArray(kawasan, k, setKawasan)}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                  kawasan.includes(k)
-                    ? 'bg-brand-gold text-white'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
-              >
-                {k}
-              </button>
-            ))}
+          <div className="flex flex-col gap-2">
+            {/* Selected tags & Input */}
+            <div className="flex flex-wrap gap-1.5 p-1.5 border border-gray-200 rounded-lg bg-white focus-within:border-brand-gold focus-within:ring-1 focus-within:ring-brand-gold transition-all">
+              {kawasan.map((k) => (
+                <button
+                  key={k}
+                  type="button"
+                  onClick={() => toggleArray(kawasan, k, setKawasan)}
+                  className="px-2.5 py-1 rounded-full text-xs font-medium transition-all bg-brand-gold text-white hover:bg-brand-red flex items-center gap-1 group"
+                  title="Hapus"
+                >
+                  {k}
+                  <svg className="w-3 h-3 text-white/70 group-hover:text-white" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              ))}
+              <input
+                type="text"
+                placeholder={kawasan.length === 0 ? "Ketik kawasan lalu tekan Enter..." : "Ketik lagi..."}
+                className="flex-1 min-w-[150px] px-2 py-1 text-sm border-none bg-transparent focus:outline-none focus:ring-0 text-brand-black placeholder:text-gray-400"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const val = e.currentTarget.value.trim();
+                    if (val && !kawasan.includes(val)) {
+                      setKawasan([...kawasan, val]);
+                    }
+                    e.currentTarget.value = '';
+                  }
+                }}
+              />
+            </div>
+            
+            {/* Suggestions */}
+            {KAWASAN_OPTIONS.filter(k => !kawasan.includes(k)).length > 0 && (
+              <div className="flex flex-wrap gap-1.5 items-center mt-1">
+                <span className="text-xs text-gray-400">Saran:</span>
+                {KAWASAN_OPTIONS.filter(k => !kawasan.includes(k)).map((k) => (
+                  <button
+                    key={k}
+                    type="button"
+                    onClick={() => toggleArray(kawasan, k, setKawasan)}
+                    className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-gray-100 text-gray-500 hover:bg-brand-gold/10 hover:text-brand-gold transition-colors"
+                  >
+                    + {k}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           {state?.errors?.kawasan && <p className="mt-1 text-xs text-brand-red">{state.errors.kawasan}</p>}
         </div>
