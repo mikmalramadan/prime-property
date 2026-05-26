@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
+import { ScrollReveal } from '@/components/ui/ScrollReveal'
 
 export const metadata: Metadata = {
   title: 'Tentang Kami',
@@ -73,7 +74,7 @@ export default function TentangKamiPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
             {/* Visual / Quote (Overlapping Left) */}
-            <div className="lg:col-span-5 relative z-10 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+            <ScrollReveal delay={200} className="lg:col-span-5 relative z-10">
               <div className="absolute -inset-4 bg-gradient-to-tr from-brand-gold/20 to-transparent blur-2xl rounded-3xl -z-10" />
               <div className="glass-dark rounded-3xl p-10 sm:p-12 relative overflow-hidden group">
                 <div className="absolute inset-0 bg-brand-gold/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -95,10 +96,10 @@ export default function TentangKamiPage() {
                   properti yang jelas, akurat, dan mudah diakses.
                 </blockquote>
               </div>
-            </div>
+            </ScrollReveal>
 
             {/* Text (Right Side) */}
-            <div className="lg:col-span-7 lg:pl-16 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+            <ScrollReveal delay={400} className="lg:col-span-7 lg:pl-16">
               <h2 className="text-4xl font-extrabold text-brand-black mb-8">
                 Profil <span className="text-brand-gold">Perusahaan</span>
               </h2>
@@ -121,7 +122,7 @@ export default function TentangKamiPage() {
                   tepat.
                 </p>
               </div>
-            </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -132,7 +133,7 @@ export default function TentangKamiPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
             {/* Visi */}
-            <div className="group bg-white rounded-3xl p-10 sm:p-12 border border-gray-100 shadow-xl shadow-brand-black/5 hover:border-brand-gold/30 hover:-translate-y-2 transition-all duration-500 animate-fade-in-up">
+            <ScrollReveal className="group bg-white rounded-3xl p-10 sm:p-12 border border-gray-100 shadow-xl shadow-brand-black/5 hover:border-brand-gold/30 hover:-translate-y-2 transition-all duration-500">
               <div className="w-16 h-16 rounded-2xl bg-brand-gray text-brand-gold flex items-center justify-center mb-8 group-hover:bg-brand-gold group-hover:text-white transition-all duration-500 shadow-sm">
                 <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
@@ -145,10 +146,10 @@ export default function TentangKamiPage() {
                 dan Sumatera Utara, yang menyajikan informasi properti secara
                 lengkap, transparan, dan mudah diakses oleh semua kalangan.
               </p>
-            </div>
+            </ScrollReveal>
 
             {/* Misi */}
-            <div className="group bg-white rounded-3xl p-10 sm:p-12 border border-gray-100 shadow-xl shadow-brand-black/5 hover:border-brand-gold/30 hover:-translate-y-2 transition-all duration-500 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+            <ScrollReveal delay={200} className="group bg-white rounded-3xl p-10 sm:p-12 border border-gray-100 shadow-xl shadow-brand-black/5 hover:border-brand-gold/30 hover:-translate-y-2 transition-all duration-500">
               <div className="w-16 h-16 rounded-2xl bg-brand-gray text-brand-gold flex items-center justify-center mb-8 group-hover:bg-brand-gold group-hover:text-white transition-all duration-500 shadow-sm">
                 <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
@@ -173,7 +174,7 @@ export default function TentangKamiPage() {
                   <span>Membangun hubungan jangka panjang berdasarkan kepercayaan.</span>
                 </li>
               </ul>
-            </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -181,21 +182,21 @@ export default function TentangKamiPage() {
       {/* Company Values */}
       <section className="py-24 sm:py-32 bg-gray-50 border-t border-gray-200/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-20 animate-fade-in-up">
+          <ScrollReveal className="text-center max-w-3xl mx-auto mb-20">
             <h2 className="text-4xl sm:text-5xl font-extrabold text-brand-black tracking-tight">
               Nilai-Nilai <span className="text-brand-gold">Kami</span>
             </h2>
             <p className="mt-6 text-gray-500 text-lg sm:text-xl">
               Prinsip utama yang menjadi landasan kokoh dalam setiap langkah pelayanan kami.
             </p>
-          </div>
+          </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             {VALUES.map((v, i) => (
-              <div
+              <ScrollReveal
                 key={v.title}
-                className="group flex flex-col sm:flex-row items-start gap-6 p-8 rounded-3xl bg-white border border-gray-100 hover:border-brand-gold/30 hover:shadow-2xl hover:shadow-brand-gold/10 hover:-translate-y-1 transition-all duration-400 animate-fade-in-up"
-                style={{ animationDelay: `${i * 100}ms` }}
+                delay={i * 100}
+                className="group flex flex-col sm:flex-row items-start gap-6 p-8 rounded-3xl bg-white border border-gray-100 hover:border-brand-gold/30 hover:shadow-2xl hover:shadow-brand-gold/10 hover:-translate-y-1 transition-all duration-400"
               >
                 <div className="w-16 h-16 rounded-2xl bg-brand-gray text-brand-gold flex items-center justify-center flex-shrink-0 group-hover:bg-brand-gold group-hover:text-white transition-all duration-300">
                   {v.icon}
@@ -208,7 +209,7 @@ export default function TentangKamiPage() {
                     {v.description}
                   </p>
                 </div>
-              </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>

@@ -7,6 +7,8 @@ import type { PropertyRow } from '@/types/database'
  * Fetches 6 in-stock, non-deleted properties from Supabase.
  * Falls back to placeholder cards if Supabase isn't configured yet.
  */
+import { ScrollReveal } from '@/components/ui/ScrollReveal'
+
 export async function FeaturedProperties() {
   let properties: PropertyRow[] = []
 
@@ -36,7 +38,7 @@ export async function FeaturedProperties() {
     <section id="properti-unggulan" className="py-20 sm:py-28 bg-brand-gray/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section heading */}
-        <div className="text-center max-w-2xl mx-auto mb-14">
+        <ScrollReveal className="text-center max-w-2xl mx-auto mb-14">
           <h2 className="text-3xl sm:text-4xl font-bold text-brand-black">
             Properti{' '}
             <span className="text-brand-gold">Unggulan</span>
@@ -44,12 +46,14 @@ export async function FeaturedProperties() {
           <p className="mt-4 text-gray-500 text-lg">
             Koleksi properti pilihan terbaik kami yang siap untuk Anda.
           </p>
-        </div>
+        </ScrollReveal>
 
         {/* Property grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {properties.map((p) => (
-            <PropertyCard key={p.id} property={p} />
+          {properties.map((p, i) => (
+            <ScrollReveal key={p.id} delay={i * 100} className="h-full">
+              <PropertyCard property={p} />
+            </ScrollReveal>
           ))}
         </div>
       </div>

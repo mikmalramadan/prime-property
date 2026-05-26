@@ -10,7 +10,7 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({ property, agentView = false }: PropertyCardProps) {
-  const cardClassName = "group block p-6 rounded-2xl bg-white border border-gray-100 hover:border-brand-gold/40 hover:shadow-2xl hover:shadow-brand-gold/10 hover:-translate-y-1 transition-all duration-400 relative overflow-hidden"
+  const cardClassName = "group flex flex-col h-full p-6 rounded-2xl bg-white border border-gray-100 hover:border-brand-gold/40 hover:shadow-2xl hover:shadow-brand-gold/10 hover:-translate-y-1 transition-all duration-400 relative overflow-hidden"
 
   const content = (
     <>
@@ -67,7 +67,7 @@ export function PropertyCard({ property, agentView = false }: PropertyCardProps)
       </div>
 
       {/* Bottom row: badges + kawasan */}
-      <div className="flex flex-wrap gap-1.5 items-center">
+      <div className="flex flex-wrap gap-1.5 items-center mt-auto pt-2">
         <TipeBadge tipe={property.tipe} />
         <SiapBadge siap={property.siap} />
         {property.kawasan.slice(0, 2).map((k) => (

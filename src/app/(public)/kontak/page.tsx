@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { ContactForm } from '@/components/contact/ContactForm'
+import { ScrollReveal } from '@/components/ui/ScrollReveal'
 
 export const metadata: Metadata = {
   title: 'Kontak',
@@ -33,7 +34,7 @@ export default function KontakPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
 
             {/* Left Col: Contact Info (Dark Card) */}
-            <div className="lg:col-span-5 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+            <ScrollReveal delay={200} className="lg:col-span-5 h-full">
               <div className="bg-brand-black rounded-3xl p-10 sm:p-12 shadow-2xl shadow-brand-black/20 border border-white/10 relative overflow-hidden h-full">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-brand-gold/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
                 
@@ -107,10 +108,10 @@ export default function KontakPage() {
                   </div>
                 </div>
               </div>
-            </div>
+            </ScrollReveal>
 
             {/* Right Col: Contact Form (Glass/Light Card) */}
-            <div className="lg:col-span-7 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+            <ScrollReveal delay={400} className="lg:col-span-7 h-full">
               <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-2xl shadow-brand-black/5 border border-gray-100 h-full relative overflow-hidden group hover:border-brand-gold/30 transition-colors duration-500">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-brand-gold/5 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none group-hover:bg-brand-gold/10 transition-colors duration-500" />
                 
@@ -122,7 +123,7 @@ export default function KontakPage() {
                 </p>
                 <ContactForm />
               </div>
-            </div>
+            </ScrollReveal>
 
           </div>
         </div>

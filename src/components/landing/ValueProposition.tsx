@@ -42,6 +42,8 @@ const VALUES = [
   },
 ] as const
 
+import { ScrollReveal } from '@/components/ui/ScrollReveal'
+
 export function ValueProposition() {
   return (
     <section className="relative py-24 sm:py-32 bg-gray-50 overflow-hidden">
@@ -51,7 +53,7 @@ export function ValueProposition() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section heading */}
-        <div className="text-center max-w-3xl mx-auto mb-20 animate-fade-in-up">
+        <ScrollReveal className="text-center max-w-3xl mx-auto mb-20">
           <h2 className="text-4xl sm:text-5xl font-extrabold text-brand-black tracking-tight">
             Mengapa{' '}
             <span className="text-gradient">Prime Property</span>?
@@ -60,15 +62,15 @@ export function ValueProposition() {
             Kami berkomitmen memberikan pengalaman premium dan transparan
             dalam pencarian properti impian Anda.
           </p>
-        </div>
+        </ScrollReveal>
 
         {/* Value cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {VALUES.map((v, i) => (
-            <div
+            <ScrollReveal
               key={v.title}
-              className="group relative p-8 rounded-3xl bg-white border border-gray-100 hover:border-brand-gold/30 hover:shadow-2xl hover:shadow-brand-gold/10 hover:-translate-y-2 transition-all duration-500 animate-fade-in-up"
-              style={{ animationDelay: `${i * 150 + 200}ms` }}
+              delay={i * 150}
+              className="group relative p-8 rounded-3xl bg-white border border-gray-100 hover:border-brand-gold/30 hover:shadow-2xl hover:shadow-brand-gold/10 hover:-translate-y-2 transition-all duration-500"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-brand-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none" />
               
@@ -83,7 +85,7 @@ export function ValueProposition() {
                   {v.description}
                 </p>
               </div>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>
