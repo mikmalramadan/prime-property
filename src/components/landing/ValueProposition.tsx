@@ -43,22 +43,26 @@ const VALUES = [
 ] as const
 
 import { ScrollReveal } from '@/components/ui/ScrollReveal'
+import { HeroParticles } from '@/components/landing/HeroParticles'
 
 export function ValueProposition() {
   return (
-    <section className="relative py-24 sm:py-32 bg-gray-50 overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-brand-gold/10 rounded-full blur-3xl opacity-60" />
-      <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-brand-gold/5 rounded-full blur-3xl opacity-60" />
+    <section className="relative py-24 sm:py-32 bg-brand-black overflow-hidden">
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.20]"
+        style={{ backgroundImage: "url('/value-bg.png')" }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-brand-black/50 via-brand-black/20 to-brand-black/90" />
+      <HeroParticles />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
         {/* Section heading */}
         <ScrollReveal className="text-center max-w-3xl mx-auto mb-20">
-          <h2 className="text-4xl sm:text-5xl font-extrabold text-brand-black tracking-tight">
+          <h2 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">
             Mengapa{' '}
             <span className="text-gradient">Prime Property</span>?
           </h2>
-          <p className="mt-6 text-gray-500 text-lg sm:text-xl leading-relaxed">
+          <p className="mt-6 text-gray-400 text-lg sm:text-xl leading-relaxed">
             Kami berkomitmen memberikan pengalaman premium dan transparan
             dalam pencarian properti impian Anda.
           </p>
@@ -70,18 +74,18 @@ export function ValueProposition() {
             <ScrollReveal
               key={v.title}
               delay={i * 150}
-              className="group relative p-8 rounded-3xl bg-white border border-gray-100 hover:border-brand-gold/30 hover:shadow-2xl hover:shadow-brand-gold/10 hover:-translate-y-2 transition-all duration-500"
+              className="group relative p-8 rounded-3xl bg-brand-black/50 backdrop-blur-md border border-white/10 hover:border-brand-gold/30 hover:shadow-2xl hover:shadow-brand-gold/10 hover:-translate-y-2 transition-all duration-500"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-brand-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none" />
               
               <div className="relative z-10">
-                <div className="w-16 h-16 rounded-2xl bg-brand-gray text-brand-gold flex items-center justify-center mb-6 group-hover:bg-brand-gold group-hover:text-white group-hover:scale-110 transition-all duration-500 shadow-sm group-hover:shadow-md group-hover:shadow-brand-gold/30">
+                <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 text-brand-gold flex items-center justify-center mb-6 group-hover:bg-brand-gold group-hover:text-white group-hover:scale-110 transition-all duration-500 shadow-sm group-hover:shadow-md group-hover:shadow-brand-gold/30">
                   {v.icon}
                 </div>
-                <h3 className="text-xl font-bold text-brand-black mb-3 group-hover:text-brand-gold transition-colors duration-300">
+                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-brand-gold transition-colors duration-300">
                   {v.title}
                 </h3>
-                <p className="text-gray-500 text-sm sm:text-base leading-relaxed">
+                <p className="text-gray-400 text-sm sm:text-base leading-relaxed">
                   {v.description}
                 </p>
               </div>

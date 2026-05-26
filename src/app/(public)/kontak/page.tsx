@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { ContactForm } from '@/components/contact/ContactForm'
 import { ScrollReveal } from '@/components/ui/ScrollReveal'
+import { HeroParticles } from '@/components/landing/HeroParticles'
 
 export const metadata: Metadata = {
   title: 'Kontak',
@@ -12,8 +13,12 @@ export default function KontakPage() {
     <>
       {/* Page Hero - Minimalist Luxury */}
       <section className="relative bg-brand-black pt-32 pb-20 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-brand-gold/15 via-brand-black to-brand-black opacity-90" />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-gold/5 rounded-full blur-3xl opacity-50" />
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.20]"
+          style={{ backgroundImage: "url('/contact-bg.png')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-brand-black/50 via-brand-black/20 to-brand-black/90" />
+        <HeroParticles />
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-in-up">
           <h1 className="text-5xl sm:text-6xl font-extrabold text-white tracking-tight mb-6">

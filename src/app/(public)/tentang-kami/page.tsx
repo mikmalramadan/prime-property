@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { ScrollReveal } from '@/components/ui/ScrollReveal'
+import { HeroParticles } from '@/components/landing/HeroParticles'
 
 export const metadata: Metadata = {
   title: 'Tentang Kami',
@@ -55,8 +56,12 @@ export default function TentangKamiPage() {
     <>
       {/* Page Hero - Luxury Gradient */}
       <section className="relative bg-brand-black py-24 sm:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-brand-gold/10 via-brand-black to-brand-black opacity-80" />
-        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-[0.02]" />
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.20]"
+          style={{ backgroundImage: "url('/about-bg.png')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-brand-black/50 via-brand-black/20 to-brand-black/90" />
+        <HeroParticles />
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-in-up">
 
