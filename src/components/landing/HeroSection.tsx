@@ -1,12 +1,19 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { HeroParticles } from '@/components/landing/HeroParticles'
 
 export function HeroSection() {
   return (
     <section className="relative bg-brand-black overflow-hidden min-h-[90vh] flex items-center">
-      {/* Dynamic Background Gradients */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-brand-gold/20 via-brand-black to-brand-black opacity-60" />
-      <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-[0.03]" />
+      {/* Background image with low opacity */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.30]"
+        style={{ backgroundImage: "url('/hero-bg.png')" }}
+      />
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-brand-black/50 via-brand-black/20 to-brand-black/70" />
+      {/* Animated particles */}
+      <HeroParticles />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 w-full">
         <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-20">
