@@ -27,7 +27,7 @@ export function PropertyTable({ properties, sort, order }: PropertyTableProps) {
     <div className="glass-card rounded-3xl border border-white/40 overflow-hidden shadow-2xl shadow-brand-black/5 relative">
       <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-white/10 pointer-events-none" />
       <div className="overflow-x-auto relative z-10">
-        <table className="w-full text-sm">
+        <table className="w-full text-sm whitespace-nowrap">
           <thead>
             <tr className="border-b border-gray-200/50">
               <SortHeader label="Nama" field="nama" currentSort={sort} currentOrder={order} />
