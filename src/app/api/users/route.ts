@@ -66,15 +66,13 @@ export async function POST(request: Request) {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
     // 3. Insert tabel profiles untuk set role = 'admin' dan nama
-    const { error: profileError } = await supabaseAdmin
-      .from('profiles')
-      .insert({
-        id: authData.user.id,
-        email: validatedData.email,
-        role: 'admin',
-        full_name: validatedData.name,
-        is_active: true
-      })
+    const { error: profileError } = await (supabaseAdmin.from('profiles') as any).insert({
+      id: authData.user.id,
+      email: validatedData.email,
+      role: 'admin',
+      full_name: validatedData.name,
+      is_active: true
+    })
 
     if (profileError) {
       return NextResponse.json(
