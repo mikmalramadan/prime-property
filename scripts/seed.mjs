@@ -39,7 +39,7 @@ async function runSeed() {
 
   // 1. Create a Superadmin User
   const adminEmail = 'superadmin@primeproperty.id'
-  const adminPassword = 'Password123!'
+  const adminPassword = 'SuperAdmin123!'
   
   console.log(`Creating superadmin: ${adminEmail}`)
   
@@ -49,8 +49,9 @@ async function runSeed() {
   const existingUser = userList?.users.find(u => u.email === adminEmail)
 
   if (existingUser) {
-    console.log("Superadmin already exists.")
+    console.log("Superadmin already exists. Updating password...")
     adminId = existingUser.id
+    await supabase.auth.admin.updateUserById(adminId, { password: adminPassword })
   } else {
     const { data: newUser, error: createErr } = await supabase.auth.admin.createUser({
       email: adminEmail,
@@ -78,6 +79,47 @@ async function runSeed() {
     await supabase.from('profiles').update({ role: 'superadmin' }).eq('id', adminId)
   }
   console.log("Superadmin profile ready!")
+
+  // 1.5 Create a standard Admin User
+  const stdAdminEmail = 'admin@primeproperty.id'
+  const stdAdminPassword = 'Admin123!'
+  console.log(`Creating admin: ${stdAdminEmail}`)
+  
+  const existingStd = userList?.users.find(u => u.email === stdAdminEmail)
+  let stdAdminId = null
+
+  if (existingStd) {
+    console.log("Admin already exists. Updating password...")
+    stdAdminId = existingStd.id
+    await supabase.auth.admin.updateUserById(stdAdminId, { password: stdAdminPassword })
+  } else {
+    const { data: newStdUser, error: stdCreateErr } = await supabase.auth.admin.createUser({
+      email: stdAdminEmail,
+      password: stdAdminPassword,
+      email_confirm: true
+    })
+    
+    if (stdCreateErr) {
+      console.error("Failed to create admin:", stdCreateErr)
+    } else {
+      stdAdminId = newStdUser.user.id
+    }
+  }
+
+  if (stdAdminId) {
+    const { data: stdProfile } = await supabase.from('profiles').select('*').eq('id', stdAdminId).single()
+    if (!stdProfile) {
+      await supabase.from('profiles').insert({
+        id: stdAdminId,
+        email: stdAdminEmail,
+        role: 'admin',
+        is_active: true
+      })
+    } else {
+      await supabase.from('profiles').update({ role: 'admin' }).eq('id', stdAdminId)
+    }
+    console.log("Admin profile ready!")
+  }
 
   // 2. Clear existing dummy properties (optional, to avoid huge duplicates)
   // We'll just generate 50 new ones.

@@ -16,6 +16,20 @@ Platform digital manajemen dan pemasaran properti untuk ruko dan villa di wilaya
 
 ---
 
+## 🔑 Demo Credentials
+
+Gunakan kredensial berikut jika Anda sudah melakukan *seeding data dummy* (lihat panduan seeding di bawah):
+
+| Role       | Email                    | Password     |
+|------------|--------------------------|--------------|
+| Superadmin | superadmin@primeproperty.id | SuperAdmin123! |
+| Admin      | admin@primeproperty.id    | Admin123!    |
+
+**Login URL:**
+`http://localhost:3000/agent/login` (Lokal) atau `https://[domain-anda]/agent/login` (Production)
+
+---
+
 ## 🛠️ Tech Stack
 
 | Layer | Teknologi |
