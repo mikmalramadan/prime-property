@@ -1,5 +1,6 @@
 import { getCurrentProfile } from '@/lib/auth'
 import { redirect } from 'next/navigation'
+import { logoutAction } from '@/app/agent/logout/actions'
 
 export default async function DeactivatedPage() {
   const profile = await getCurrentProfile()
@@ -30,7 +31,7 @@ export default async function DeactivatedPage() {
           Akses Anda ke portal internal telah dibekukan. Jika ini adalah kesalahan, silakan hubungi superadmin untuk pemulihan akses.
         </p>
         
-        <form action="/agent/logout" method="POST">
+        <form action={logoutAction}>
           <button type="submit" className="group relative w-full py-4 bg-brand-gold text-brand-black font-extrabold rounded-xl text-sm uppercase tracking-wide overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-brand-gold/40 hover:-translate-y-0.5">
             <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
             <span className="relative">Keluar Akun</span>

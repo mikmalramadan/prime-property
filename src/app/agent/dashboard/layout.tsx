@@ -1,4 +1,5 @@
 import { getCurrentProfile } from '@/lib/auth'
+import { logoutAction } from '@/app/agent/logout/actions'
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -116,7 +117,7 @@ export default async function DashboardLayout({
             </div>
 
             {/* Logout */}
-            <form action="/agent/logout" method="POST">
+            <form action={logoutAction}>
               <button
                 type="submit"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-500 hover:text-brand-red hover:bg-red-50 rounded-lg transition-colors"
