@@ -1,6 +1,9 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
+import { Ratelimit } from '@upstash/ratelimit'
+import { Redis } from '@upstash/redis'
+
 /**
  * Next.js Proxy (previously Middleware) — runs on every matched request.
  *
@@ -13,31 +16,48 @@ import { updateSession } from '@/lib/supabase/middleware'
  *  2. Protect /agent/* routes — redirect unauthenticated users to /agent/login.
  *  3. Redirect authenticated users away from /agent/login to /agent/dashboard.
  */
-// Simple IP Rate Limiter (10 req/min) for Auth endpoint
-const ipRequests = new Map<string, number[]>()
 
-function checkRateLimit(request: NextRequest): boolean {
-  if (request.method !== 'POST' || request.nextUrl.pathname !== '/agent/login') {
-    return true // allow
-  }
+// Global rate limiter: 100 requests per minute
+const globalRateLimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(100, '1 m'),
+  analytics: true,
+  prefix: '@upstash/ratelimit/global',
+})
 
-  const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
-  const now = Date.now()
-  const windowMs = 60 * 1000 // 1 minute
-  const limit = 10
-
-  const requests = ipRequests.get(ip) || []
-  const validRequests = requests.filter(time => now - time < windowMs)
-  validRequests.push(now)
-  ipRequests.set(ip, validRequests)
-
-  return validRequests.length <= limit
-}
+// Auth rate limiter: 10 requests per minute for /agent/login
+const authRateLimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(10, '1 m'),
+  analytics: true,
+  prefix: '@upstash/ratelimit/auth',
+})
 
 export async function proxy(request: NextRequest) {
-  if (!checkRateLimit(request)) {
-    return new NextResponse('Too Many Requests. IP Rate Limit Exceeded.', { status: 429 })
+  const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1'
+
+  // Apply Auth rate limit for login endpoint
+  if (request.method === 'POST' && request.nextUrl.pathname === '/agent/login') {
+    try {
+      const { success } = await authRateLimit.limit(`auth_${ip}`)
+      if (!success) {
+        return new NextResponse('Too Many Requests. Auth Limit Exceeded.', { status: 429 })
+      }
+    } catch (error) {
+      console.error('Redis Auth Rate Limit Error:', error)
+    }
   }
+
+  // Apply Global rate limit for all requests
+  try {
+    const { success } = await globalRateLimit.limit(`global_${ip}`)
+    if (!success) {
+      return new NextResponse('Too Many Requests. Global Limit Exceeded.', { status: 429 })
+    }
+  } catch (error) {
+    console.error('Redis Global Rate Limit Error:', error)
+  }
+
   return updateSession(request)
 }
 

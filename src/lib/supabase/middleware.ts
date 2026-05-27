@@ -46,7 +46,12 @@ export async function updateSession(request: NextRequest) {
           supabaseResponse = NextResponse.next({ request })
           // 3. Attach Set-Cookie headers so the browser persists the new tokens
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options),
+            supabaseResponse.cookies.set(name, value, {
+              ...options,
+              httpOnly: true,
+              secure: process.env.NODE_ENV === 'production',
+              sameSite: 'lax',
+            }),
           )
         },
       },
