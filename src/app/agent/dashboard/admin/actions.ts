@@ -27,63 +27,6 @@ export async function toggleAdminStatus(profileId: string, currentlyActive: bool
 }
 
 /**
- * Create a new admin account.
- * In a real setup, this would use admin.auth.createUser() via a service role key.
- * For now, it creates a profile entry (the user must exist in auth.users).
- */
-export type CreateAdminState = {
-  success?: boolean
-  error?: string
-  tempPassword?: string
-} | null
-
-export async function createAdmin(
-  _prevState: CreateAdminState,
-  formData: FormData,
-): Promise<CreateAdminState> {
-  await requireRole('superadmin')
-
-  const email = (formData.get('email') as string)?.trim()
-  const role = (formData.get('role') as string) || 'admin'
-
-  if (!email) {
-    return { error: 'Email wajib diisi.' }
-  }
-
-  // Basic email regex validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!emailRegex.test(email)) {
-    return { error: 'Format email tidak valid.' }
-  }
-
-  if (!['admin', 'superadmin'].includes(role)) {
-    return { error: 'Role tidak valid.' }
-  }
-
-  const supabase = await createClient()
-
-  // Check if email already exists in profiles
-  const { data: existingProfile } = await supabase
-    .from('profiles')
-    .select('id')
-    .eq('email', email)
-    .single()
-
-  if (existingProfile) {
-    return { error: 'Email sudah terdaftar.' }
-  }
-
-  // NOTE: In production, use the service_role key + admin.auth.createUser()
-  // to properly create the auth user + profile atomically.
-  // For now, we just log the intent.
-  const tempPassword = Math.random().toString(36).slice(-8) + '!'
-  console.log(`[Admin] Would create user: ${email} with role: ${role} and password: ${tempPassword}`)
-
-  revalidatePath('/agent/dashboard/admin')
-  return { success: true, tempPassword }
-}
-
-/**
  * Reset an admin's password to a temporary generated password.
  */
 export async function resetAdminPassword(profileId: string) {
