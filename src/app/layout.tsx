@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { ToastProvider } from "@/components/ui/Toast";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 // next/font/google self-hosts Inter — no external network request at runtime
@@ -60,6 +61,7 @@ export default function RootLayout({
       <body className="min-h-dvh flex flex-col antialiased">
         {children}
         <ToastProvider />
+        <SpeedInsights />
       </body>
     </html>
   );
