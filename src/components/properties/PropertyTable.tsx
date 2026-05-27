@@ -4,8 +4,14 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { StatusBadge, SiapBadge, TipeBadge } from '@/components/ui/Badge'
 import { formatRupiah, formatDimensions } from '@/lib/format'
+import dynamic from 'next/dynamic'
 import type { PropertyRow } from '@/types/database'
-import { PropertyDrawer } from './PropertyDrawer'
+
+// Lazy load drawer karena komponen ini berat dan tidak langsung terlihat
+const PropertyDrawer = dynamic(
+  () => import('./PropertyDrawer').then((mod) => mod.PropertyDrawer),
+  { ssr: false } // Drawer menggunakan Portal dan window events
+)
 
 interface PropertyTableProps {
   properties: PropertyRow[]

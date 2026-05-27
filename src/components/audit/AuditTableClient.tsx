@@ -2,8 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { formatDateTime } from '@/lib/format'
+import dynamic from 'next/dynamic'
 import type { AuditLogRow } from '@/types/database'
-import { AuditDrawer } from './AuditDrawer'
+
+const AuditDrawer = dynamic(
+  () => import('./AuditDrawer').then((mod) => mod.AuditDrawer),
+  { ssr: false }
+)
 
 // Extended type from API response
 interface EnrichedAuditLog extends AuditLogRow {
