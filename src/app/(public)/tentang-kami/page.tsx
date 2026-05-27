@@ -78,8 +78,8 @@ export default function TentangKamiPage() {
       <section className="py-24 sm:py-32 bg-gray-50 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-            {/* Visual / Quote (Overlapping Left) */}
-            <ScrollReveal delay={200} className="lg:col-span-5 relative z-10">
+            {/* Visual / Quote (Right Side on Desktop) */}
+            <ScrollReveal delay={400} className="lg:col-span-5 relative z-10 lg:order-last">
               <div className="absolute -inset-4 bg-gradient-to-tr from-brand-gold/20 to-transparent blur-2xl rounded-3xl -z-10" />
               <div className="glass-dark rounded-3xl p-10 sm:p-12 relative overflow-hidden group">
                 <div className="absolute inset-0 bg-brand-gold/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -103,8 +103,8 @@ export default function TentangKamiPage() {
               </div>
             </ScrollReveal>
 
-            {/* Text (Right Side) */}
-            <ScrollReveal delay={400} className="lg:col-span-7 lg:pl-16">
+            {/* Text (Left Side on Desktop) */}
+            <ScrollReveal delay={200} className="lg:col-span-7 lg:pr-16 lg:order-first">
               <h2 className="text-4xl font-extrabold text-brand-black mb-8">
                 Profil <span className="text-brand-gold">Perusahaan</span>
               </h2>
