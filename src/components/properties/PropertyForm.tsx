@@ -353,7 +353,7 @@ export function PropertyForm({ action, initialData, submitLabel = 'Simpan' }: Pr
         </div>
       )}
 
-      <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-4 border-t border-gray-100">
         <button
           type="button"
           onClick={handleSubmit((data) => onSubmit(data, false))}

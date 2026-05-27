@@ -139,7 +139,7 @@ export function PropertyDrawer({ property, isSuperadmin, onClose }: PropertyDraw
         </div>
 
         {/* Footer Actions */}
-        <div className="p-6 border-t border-gray-100 bg-gray-50 flex gap-3">
+        <div className="p-6 border-t border-gray-100 bg-gray-50 flex flex-col sm:flex-row gap-3">
           <Link
             href={`/agent/dashboard/properties/${property.id}`}
             className="flex-1 inline-flex justify-center items-center px-4 py-2.5 bg-white border border-gray-200 text-brand-black font-semibold rounded-xl text-sm hover:bg-gray-50 transition-colors shadow-sm"
