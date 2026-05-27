@@ -50,6 +50,23 @@ export function formatDateShort(iso: string): string {
   return `${day}/${month}/${year}`
 }
 
+/**
+ * Format an ISO timestamp to Indonesian date and time (WIB / Asia/Jakarta).
+ * @example formatDateTime('2026-05-24T10:00:00Z') → "24 Mei 2026, 17:00 WIB"
+ */
+export function formatDateTime(iso: string): string {
+  const d = new Date(iso)
+  return d.toLocaleString('id-ID', {
+    timeZone: 'Asia/Jakarta',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZoneName: 'short'
+  }).replace('AM', '').replace('PM', '').trim() + ' WIB' // Fallback if timeZoneName is weird, but usually id-ID gives 'WIB'
+}
+
 // ---------------------------------------------------------------------------
 // Dimensions
 // ---------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { requireRole } from '@/lib/auth'
-import { formatDate } from '@/lib/format'
+import { formatDateTime } from '@/lib/format'
 import type { AuditLogRow, ProfileRow, PropertyRow } from '@/types/database'
 
 export const metadata: Metadata = {
@@ -110,7 +110,7 @@ export default async function AuditLogPage({ searchParams }: PageProps) {
                 return (
                   <tr key={log.id} className="hover:bg-brand-gold/5 transition-colors">
                     <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
-                      {formatDate(log.created_at)}
+                      {formatDateTime(log.created_at)}
                     </td>
                     <td className="px-4 py-3">
                       <span

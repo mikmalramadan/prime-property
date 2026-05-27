@@ -2,19 +2,20 @@
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { formatDateTime } from '@/lib/format'
 
 // ---------------------------------------------------------------------------
-// Rate Limiter for Login (15 min lockout after 5 fails)
+// Rate Limiter for Login (15 min lockout after 5 fails within 30 mins)
 // ---------------------------------------------------------------------------
-const loginAttempts = new Map<string, { failedCount: number; lockedUntil: number | null }>()
+const loginAttempts = new Map<string, { failures: number[]; lockedUntil: number | null }>()
 
-function checkLoginLockout(email: string): { isLocked: boolean; remainingMinutes?: number } {
+function checkLoginLockout(email: string): { isLocked: boolean; lockTimeStr?: string } {
   const record = loginAttempts.get(email)
   if (!record) return { isLocked: false }
 
   if (record.lockedUntil && Date.now() < record.lockedUntil) {
-    const remaining = Math.ceil((record.lockedUntil - Date.now()) / 60000)
-    return { isLocked: true, remainingMinutes: remaining }
+    const lockTimeStr = formatDateTime(new Date(record.lockedUntil).toISOString())
+    return { isLocked: true, lockTimeStr }
   }
 
   // Lock expired, reset
@@ -26,12 +27,17 @@ function checkLoginLockout(email: string): { isLocked: boolean; remainingMinutes
 }
 
 function recordFailedLogin(email: string) {
-  const record = loginAttempts.get(email) || { failedCount: 0, lockedUntil: null }
-  record.failedCount += 1
+  const now = Date.now()
+  const record = loginAttempts.get(email) || { failures: [], lockedUntil: null }
+  
+  // Remove failures older than 30 minutes
+  record.failures = record.failures.filter(t => now - t < 30 * 60 * 1000)
+  record.failures.push(now)
 
-  if (record.failedCount >= 5) {
+  if (record.failures.length >= 5) {
     // Lock for 15 minutes
-    record.lockedUntil = Date.now() + 15 * 60 * 1000
+    record.lockedUntil = now + 15 * 60 * 1000
+    record.failures = [] // reset strikes after locking
   }
 
   loginAttempts.set(email, record)
@@ -67,7 +73,7 @@ export async function signIn(
   // Check Lockout
   const lockoutStatus = checkLoginLockout(email)
   if (lockoutStatus.isLocked) {
-    return { error: `Akun terkunci sementara karena terlalu banyak percobaan gagal. Coba lagi dalam ${lockoutStatus.remainingMinutes} menit.` }
+    return { error: `Akun terkunci sementara. Silakan coba lagi setelah ${lockoutStatus.lockTimeStr}.` }
   }
 
   const supabase = await createClient()
@@ -84,9 +90,9 @@ export async function signIn(
     // Map common Supabase Auth errors to Indonesian messages
     if (error.message.includes('Invalid login credentials')) {
       const record = loginAttempts.get(email)
-      const attemptsLeft = 5 - (record?.failedCount || 0)
+      const attemptsLeft = 5 - (record?.failures.length || 0)
       if (attemptsLeft <= 0) {
-        return { error: 'Terlalu banyak percobaan gagal. Akun dikunci selama 15 menit.' }
+        return { error: 'Terlalu banyak percobaan gagal. Akun dikunci sementara.' }
       }
       return { error: `Email atau password salah. Sisa percobaan: ${attemptsLeft}` }
     }

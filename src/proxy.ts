@@ -1,4 +1,4 @@
-import { type NextRequest } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
 /**
@@ -13,7 +13,31 @@ import { updateSession } from '@/lib/supabase/middleware'
  *  2. Protect /agent/* routes — redirect unauthenticated users to /agent/login.
  *  3. Redirect authenticated users away from /agent/login to /agent/dashboard.
  */
+// Simple IP Rate Limiter (10 req/min) for Auth endpoint
+const ipRequests = new Map<string, number[]>()
+
+function checkRateLimit(request: NextRequest): boolean {
+  if (request.method !== 'POST' || request.nextUrl.pathname !== '/agent/login') {
+    return true // allow
+  }
+
+  const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
+  const now = Date.now()
+  const windowMs = 60 * 1000 // 1 minute
+  const limit = 10
+
+  const requests = ipRequests.get(ip) || []
+  const validRequests = requests.filter(time => now - time < windowMs)
+  validRequests.push(now)
+  ipRequests.set(ip, validRequests)
+
+  return validRequests.length <= limit
+}
+
 export async function proxy(request: NextRequest) {
+  if (!checkRateLimit(request)) {
+    return new NextResponse('Too Many Requests. IP Rate Limit Exceeded.', { status: 429 })
+  }
   return updateSession(request)
 }
 
