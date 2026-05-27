@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { withAuth } from '@/lib/auth'
+import { propertySchema } from '@/lib/validations/property'
 
 async function getPropertiesHandler(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -96,3 +97,64 @@ async function getPropertiesHandler(req: NextRequest) {
 // 5. Auth Middleware Wajib
 // Gunakan HOC withAuth dari rekayasa sebelumnya (memastikan session aktif & mengecek block status).
 export const GET = withAuth(getPropertiesHandler)
+
+// ---------------------------------------------------------------------------
+// POST Handler (Create Property)
+// ---------------------------------------------------------------------------
+
+async function createPropertyHandler(req: NextRequest) {
+  try {
+    const body = await req.json()
+    
+    // Server-side validation dengan Zod
+    const result = propertySchema.safeParse(body)
+    if (!result.success) {
+      const errors: Record<string, string> = {}
+      result.error.issues.forEach(issue => {
+        if (issue.path[0]) {
+          errors[issue.path[0].toString()] = issue.message
+        }
+      })
+      return NextResponse.json({ errors }, { status: 400 })
+    }
+
+    const supabase = await createClient()
+
+    // Auth middleware withAuth passed 'superadmin', so we are guaranteed to have a session
+    // We can get the user id directly from the session
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Insert ke Supabase, set created_by = user.id
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: insertedProperty, error: insertError } = await (supabase.from('properties') as any)
+      .insert({
+        ...result.data,
+        created_by: session.user.id
+      })
+      .select()
+      .single()
+
+    if (insertError) {
+      return NextResponse.json({ error: insertError.message }, { status: 500 })
+    }
+
+    // Insert ke audit_logs: action='create'
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (supabase.from('audit_logs') as any).insert({
+      property_id: insertedProperty.id,
+      user_id: session.user.id,
+      action: 'create',
+      changed_fields: result.data
+    })
+
+    // Return properti baru
+    return NextResponse.json({ data: insertedProperty }, { status: 201 })
+  } catch (error) {
+    return NextResponse.json({ error: 'Terjadi kesalahan internal.' }, { status: 500 })
+  }
+}
+
+export const POST = withAuth(createPropertyHandler, 'superadmin')
