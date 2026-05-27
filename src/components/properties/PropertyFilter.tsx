@@ -27,7 +27,20 @@ const SIAP_OPTIONS = [
 export function PropertyFilter() {
   const { filters, setFilters, resetFilters, activeFilterCount } = usePropertyFilters()
   const [searchInput, setSearchInput] = useState(filters.search)
+  const [isKawasanOpen, setIsKawasanOpen] = useState(false)
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null)
+  const kawasanRef = useRef<HTMLDivElement>(null)
+
+  // Click outside handler for Kawasan dropdown
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (kawasanRef.current && !kawasanRef.current.contains(event.target as Node)) {
+        setIsKawasanOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   // Debounce search input — 300ms per spec
   useEffect(() => {
@@ -69,32 +82,56 @@ export function PropertyFilter() {
           type="text"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          placeholder="Cari nama properti, group, atau kawasan..."
+          placeholder="Cari nama properti atau group..."
           className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 text-sm text-brand-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/50 focus:border-brand-gold transition-all"
         />
       </div>
 
       {/* Filter grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Kawasan multi-select */}
-        <div>
+        {/* Kawasan multi-select dropdown */}
+        <div ref={kawasanRef} className="relative">
           <label className="block text-xs font-medium text-gray-500 mb-1.5">Kawasan</label>
-          <div className="flex flex-wrap gap-1.5">
-            {KAWASAN_OPTIONS.map((k) => (
-              <button
-                key={k}
-                type="button"
-                onClick={() => toggleArrayValue('kawasan', k)}
-                className={`px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
-                  filters.kawasan.includes(k)
-                    ? 'bg-brand-gold text-white'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
-              >
-                {k}
-              </button>
-            ))}
-          </div>
+          <button
+            type="button"
+            onClick={() => setIsKawasanOpen(!isKawasanOpen)}
+            className="w-full flex items-center justify-between px-3 py-1.5 rounded-lg border border-gray-200 text-sm text-brand-black bg-white focus:outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all"
+          >
+            <span className="truncate">
+              {filters.kawasan.length === 0
+                ? 'Semua Kawasan'
+                : `${filters.kawasan.length} dipilih`}
+            </span>
+            <svg className={`w-4 h-4 text-gray-400 transition-transform ${isKawasanOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            </svg>
+          </button>
+
+          {isKawasanOpen && (
+            <div className="absolute z-50 mt-1 w-full sm:w-64 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden animate-scale-in">
+              <div className="max-h-60 overflow-y-auto p-2 space-y-1">
+                {KAWASAN_OPTIONS.map((k) => (
+                  <label
+                    key={k}
+                    className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-md cursor-pointer transition-colors"
+                  >
+                    <div className="relative flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={filters.kawasan.includes(k)}
+                        onChange={() => toggleArrayValue('kawasan', k)}
+                        className="peer appearance-none w-4 h-4 border border-gray-300 rounded focus:ring-2 focus:ring-brand-gold/50 checked:bg-brand-gold checked:border-brand-gold transition-all cursor-pointer"
+                      />
+                      <svg className="absolute w-3 h-3 text-white left-0.5 top-0.5 opacity-0 peer-checked:opacity-100 pointer-events-none" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                      </svg>
+                    </div>
+                    <span className="text-sm text-gray-700">{k}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Hadap */}
