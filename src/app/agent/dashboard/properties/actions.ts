@@ -2,103 +2,51 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { requireRole } from '@/lib/auth'
-import type { PropertyFormState } from '@/components/properties/PropertyForm'
 import type {
   AuditAction,
   PropertyTipe,
   PropertyStatus,
   PropertySiap,
 } from '@/types/database'
+import { propertySchema } from '@/lib/validations/property'
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
 /**
- * Validate property form data (server-side).
- * Returns errors object if validation fails, null if valid.
+ * Extract and validate property data using Zod
  */
-function validateProperty(formData: FormData): Record<string, string> | null {
-  const errors: Record<string, string> = {}
-
-  const nama = (formData.get('nama_property') as string)?.trim()
-  if (!nama || nama.length < 3 || nama.length > 100) {
-    errors.nama_property = 'Nama properti harus 3–100 karakter.'
-  }
-
-  const lebar = Number(formData.get('lebar'))
-  if (!lebar || lebar <= 0) {
-    errors.lebar = 'Lebar harus lebih dari 0.'
-  }
-
-  const panjang = Number(formData.get('panjang'))
-  if (!panjang || panjang <= 0) {
-    errors.panjang = 'Panjang harus lebih dari 0.'
-  }
-
-  const tingkat = Number(formData.get('tingkat'))
-  if (!tingkat || tingkat < 1 || tingkat > 10) {
-    errors.tingkat = 'Tingkat harus 1–10.'
-  }
-
-  const price = Number(formData.get('price'))
-  if (!price || price <= 0 || !Number.isInteger(price)) {
-    errors.price = 'Harga harus bilangan bulat > 0.'
-  }
-
-  const hadap = (formData.get('hadap') as string)?.split(',').filter(Boolean) ?? []
-  if (hadap.length === 0) {
-    errors.hadap = 'Pilih minimal 1 arah hadap.'
-  }
-
-  const kawasan = (formData.get('kawasan') as string)?.split(',').filter(Boolean) ?? []
-  if (kawasan.length === 0) {
-    errors.kawasan = 'Pilih minimal 1 kawasan.'
-  }
-
-  const tipe = formData.get('tipe') as string
-  if (!['Ruko', 'Villa'].includes(tipe)) {
-    errors.tipe = 'Tipe harus Ruko atau Villa.'
-  }
-
-  const status = formData.get('status') as string
-  if (!['in_stock', 'sold_out'].includes(status)) {
-    errors.status = 'Status tidak valid.'
-  }
-
-  const siap = formData.get('siap') as string
-  if (!['siap_huni', 'siap_kosong', 'siap_huni_renovasi'].includes(siap)) {
-    errors.siap = 'Siap tidak valid.'
-  }
-
-  const mapsLink = (formData.get('maps_link') as string)?.trim()
-  if (mapsLink && !mapsLink.includes('google.com/maps') && !mapsLink.includes('maps.app.goo.gl')) {
-    errors.maps_link = 'Link harus valid dari Google Maps (google.com/maps atau maps.app.goo.gl).'
-  }
-
-  return Object.keys(errors).length > 0 ? errors : null
-}
-
-/**
- * Extract property data from FormData.
- */
-function extractPropertyData(formData: FormData) {
-  return {
-    nama_property: (formData.get('nama_property') as string).trim(),
-    group_name:    (formData.get('group_name') as string)?.trim() || null,
+function parseFormData(formData: FormData) {
+  const data = {
+    nama_property: formData.get('nama_property'),
+    group_name:    formData.get('group_name') || null,
     lebar:         Number(formData.get('lebar')),
     panjang:       Number(formData.get('panjang')),
     hadap:         (formData.get('hadap') as string).split(',').filter(Boolean),
-    tipe:          formData.get('tipe') as PropertyTipe,
+    tipe:          formData.get('tipe'),
     tingkat:       Number(formData.get('tingkat')),
     price:         Number(formData.get('price')),
     carport:       formData.get('carport') === 'true',
-    status:        formData.get('status') as PropertyStatus,
-    siap:          formData.get('siap') as PropertySiap,
-    maps_link:     (formData.get('maps_link') as string)?.trim() || null,
+    status:        formData.get('status'),
+    siap:          formData.get('siap'),
+    maps_link:     formData.get('maps_link') || null,
     kawasan:       (formData.get('kawasan') as string).split(',').filter(Boolean),
-    unit:          (formData.get('unit') as string)?.trim() || null,
+    unit:          formData.get('unit') || null,
   }
+
+  const result = propertySchema.safeParse(data)
+  if (!result.success) {
+    const errors: Record<string, string> = {}
+    result.error.issues.forEach(issue => {
+      if (issue.path[0]) {
+        errors[issue.path[0].toString()] = issue.message
+      }
+    })
+    return { errors, data: null }
+  }
+
+  return { errors: null, data: result.data }
 }
 
 /**
@@ -125,16 +73,15 @@ async function writeAuditLog(
 // ---------------------------------------------------------------------------
 
 export async function createProperty(
-  _prevState: PropertyFormState,
+  _prevState: any,
   formData: FormData,
-): Promise<PropertyFormState> {
+): Promise<{ success?: boolean; propertyId?: string; errors?: Record<string, string> }> {
   const { user } = await requireRole('superadmin')
 
-  const errors = validateProperty(formData)
-  if (errors) return { errors }
+  const { errors, data } = parseFormData(formData)
+  if (errors || !data) return { errors: errors || { server: 'Invalid data' } }
 
   const supabase = await createClient()
-  const data = extractPropertyData(formData)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: inserted, error } = await (supabase.from('properties') as any)
@@ -164,16 +111,15 @@ export async function createProperty(
 
 export async function updateProperty(
   propertyId: string,
-  _prevState: PropertyFormState,
+  _prevState: any,
   formData: FormData,
-): Promise<PropertyFormState> {
+): Promise<{ success?: boolean; propertyId?: string; errors?: Record<string, string> }> {
   const { user } = await requireRole('superadmin')
 
-  const errors = validateProperty(formData)
-  if (errors) return { errors }
+  const { errors, data } = parseFormData(formData)
+  if (errors || !data) return { errors: errors || { server: 'Invalid data' } }
 
   const supabase = await createClient()
-  const data = extractPropertyData(formData)
 
   // Get old data for audit diff
   const { data: oldData } = await supabase
