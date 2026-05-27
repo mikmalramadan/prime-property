@@ -1,35 +1,19 @@
 'use client'
 
-import { useActionState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState, useTransition } from 'react'
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { propertySchema, type PropertyFormValues } from '@/lib/validations/property'
 import { formatRupiah } from '@/lib/format'
 import type { PropertyRow } from '@/types/database'
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-export type PropertyFormState = {
-  success?: boolean
-  propertyId?: string
-  errors?: Record<string, string>
-} | null
-
-type PropertyFormAction = (
-  prevState: PropertyFormState,
-  formData: FormData,
-) => Promise<PropertyFormState>
+import { toast } from '@/components/ui/Toast'
 
 interface PropertyFormProps {
-  action: PropertyFormAction
+  action: (prevState: any, formData: FormData) => Promise<any>
   initialData?: PropertyRow | null
   submitLabel?: string
 }
-
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
 
 const HADAP_OPTIONS = ['Utara', 'Selatan', 'Timur', 'Barat'] as const
 const KAWASAN_OPTIONS = [
@@ -37,120 +21,161 @@ const KAWASAN_OPTIONS = [
   'Cemara Asri', 'Kuala', 'Sunggal', 'Marelan',
 ] as const
 
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
-
 export function PropertyForm({ action, initialData, submitLabel = 'Simpan' }: PropertyFormProps) {
   const router = useRouter()
-  const [state, formAction, pending] = useActionState<PropertyFormState, FormData>(action, null)
+  const [isPending, startTransition] = useTransition()
+  const [serverError, setServerError] = useState<string | null>(null)
 
-  // Multi-select state for hadap and kawasan (not natively supported by form)
-  const [hadap, setHadap]     = useState<string[]>(initialData?.hadap ?? [])
-  const [kawasan, setKawasan] = useState<string[]>(initialData?.kawasan ?? [])
+  const {
+    register,
+    control,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    formState: { errors, dirtyFields },
+  } = useForm<PropertyFormValues>({
+    resolver: zodResolver(propertySchema),
+    defaultValues: {
+      nama_property: initialData?.nama_property ?? '',
+      group_name: initialData?.group_name ?? '',
+      unit: initialData?.unit ?? '',
+      lebar: initialData?.lebar ?? undefined,
+      panjang: initialData?.panjang ?? undefined,
+      tingkat: initialData?.tingkat ?? undefined,
+      price: initialData?.price ?? undefined,
+      tipe: initialData?.tipe ?? 'Ruko',
+      status: initialData?.status ?? 'in_stock',
+      siap: initialData?.siap ?? 'siap_huni',
+      carport: initialData?.carport ?? false,
+      hadap: initialData?.hadap ?? [],
+      kawasan: initialData?.kawasan ?? [],
+      maps_link: initialData?.maps_link ?? '',
+    },
+  })
 
-  // Redirect on success
-  useEffect(() => {
-    if (state?.success) {
-      const url = state.propertyId
-        ? `/agent/dashboard/properties/${state.propertyId}`
-        : '/agent/dashboard/properties'
-      router.push(`${url}?highlight=${state.propertyId ?? ''}`)
-    }
-  }, [state, router])
+  const priceValue = watch('price')
+  const kawasanValue = watch('kawasan')
+  const hadapValue = watch('hadap')
 
-  const toggleArray = (arr: string[], value: string, setter: (v: string[]) => void) => {
-    setter(
-      arr.includes(value)
-        ? arr.filter((v) => v !== value)
-        : [...arr, value],
-    )
+  const onSubmit = (data: PropertyFormValues, keepOpen: boolean) => {
+    setServerError(null)
+    startTransition(async () => {
+      // Build FormData to send to server action
+      const formData = new FormData()
+      Object.entries(data).forEach(([key, val]) => {
+        if (Array.isArray(val)) {
+          formData.append(key, val.join(','))
+        } else if (val !== null && val !== undefined) {
+          formData.append(key, String(val))
+        }
+      })
+
+      const result = await action(null, formData)
+      
+      if (result?.errors) {
+        setServerError(result.errors.server || 'Terjadi kesalahan pada validasi server.')
+      } else if (result?.success) {
+        toast('Properti berhasil disimpan!', 'success')
+        if (keepOpen) {
+          reset() // Reset form untuk tambah lagi
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        } else {
+          const url = result.propertyId
+            ? `/agent/dashboard/properties/${result.propertyId}`
+            : '/agent/dashboard/properties'
+          router.push(`${url}?highlight=${result.propertyId ?? ''}`)
+        }
+      }
+    })
+  }
+
+  const toggleArray = (arr: string[], value: string, fieldName: 'hadap' | 'kawasan') => {
+    const newArr = arr.includes(value)
+      ? arr.filter((v) => v !== value)
+      : [...arr, value]
+    setValue(fieldName, newArr, { shouldValidate: true, shouldDirty: true })
   }
 
   return (
-    <form action={formAction} className="space-y-6">
-      {/* Hidden fields for arrays (sent as comma-separated) */}
-      <input type="hidden" name="hadap" value={hadap.join(',')} />
-      <input type="hidden" name="kawasan" value={kawasan.join(',')} />
-
-      {/* Grid layout */}
+    <form className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         {/* Nama Property */}
         <div className="sm:col-span-2">
           <FormField
             label="Nama Properti"
-            name="nama_property"
             required
-            defaultValue={initialData?.nama_property}
             placeholder="Contoh: Aston Villas"
-            error={state?.errors?.nama_property}
+            {...register('nama_property')}
+            error={errors.nama_property?.message}
+            isDirty={!!dirtyFields.nama_property}
           />
         </div>
 
         {/* Group */}
         <FormField
           label="Group"
-          name="group_name"
-          defaultValue={initialData?.group_name ?? ''}
           placeholder="Contoh: Mentari"
-          error={state?.errors?.group_name}
+          {...register('group_name')}
+          error={errors.group_name?.message}
+          isDirty={!!dirtyFields.group_name}
         />
 
         {/* Unit */}
         <FormField
           label="Unit"
-          name="unit"
-          defaultValue={initialData?.unit ?? ''}
           placeholder="Contoh: Ready Siap huni"
-          error={state?.errors?.unit}
+          {...register('unit')}
+          error={errors.unit?.message}
+          isDirty={!!dirtyFields.unit}
         />
 
         {/* Lebar */}
         <FormField
           label="Lebar (m)"
-          name="lebar"
           type="number"
           step="0.01"
           required
-          defaultValue={initialData?.lebar}
           placeholder="6"
-          error={state?.errors?.lebar}
+          {...register('lebar', { valueAsNumber: true })}
+          error={errors.lebar?.message}
+          isDirty={!!dirtyFields.lebar}
         />
 
         {/* Panjang */}
         <FormField
           label="Panjang (m)"
-          name="panjang"
           type="number"
           step="0.01"
           required
-          defaultValue={initialData?.panjang}
           placeholder="15"
-          error={state?.errors?.panjang}
+          {...register('panjang', { valueAsNumber: true })}
+          error={errors.panjang?.message}
+          isDirty={!!dirtyFields.panjang}
         />
 
         {/* Tingkat */}
         <FormField
           label="Tingkat"
-          name="tingkat"
           type="number"
           step="0.5"
           required
-          defaultValue={initialData?.tingkat}
           placeholder="2"
-          error={state?.errors?.tingkat}
+          {...register('tingkat', { valueAsNumber: true })}
+          error={errors.tingkat?.message}
+          isDirty={!!dirtyFields.tingkat}
         />
 
         {/* Price */}
         <FormField
           label="Harga (Rupiah)"
-          name="price"
           type="number"
           required
-          defaultValue={initialData?.price}
           placeholder="1350000000"
-          hint={initialData?.price ? formatRupiah(initialData.price) : undefined}
-          error={state?.errors?.price}
+          {...register('price', { valueAsNumber: true })}
+          hint={priceValue && !isNaN(priceValue) ? formatRupiah(priceValue) : undefined}
+          error={errors.price?.message}
+          isDirty={!!dirtyFields.price}
         />
 
         {/* Tipe */}
@@ -163,16 +188,15 @@ export function PropertyForm({ action, initialData, submitLabel = 'Simpan' }: Pr
               <label key={t} className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="radio"
-                  name="tipe"
                   value={t}
-                  defaultChecked={initialData?.tipe === t || (!initialData && t === 'Ruko')}
+                  {...register('tipe')}
                   className="accent-brand-gold"
                 />
                 <span className="text-sm text-brand-black">{t}</span>
               </label>
             ))}
           </div>
-          {state?.errors?.tipe && <p className="mt-1 text-xs text-brand-red">{state.errors.tipe}</p>}
+          {errors.tipe && <p className="mt-1 text-xs text-[#B33A3A]">{errors.tipe.message}</p>}
         </div>
 
         {/* Status */}
@@ -188,16 +212,15 @@ export function PropertyForm({ action, initialData, submitLabel = 'Simpan' }: Pr
               <label key={s.value} className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="radio"
-                  name="status"
                   value={s.value}
-                  defaultChecked={initialData?.status === s.value || (!initialData && s.value === 'in_stock')}
+                  {...register('status')}
                   className="accent-brand-gold"
                 />
                 <span className="text-sm text-brand-black">{s.label}</span>
               </label>
             ))}
           </div>
-          {state?.errors?.status && <p className="mt-1 text-xs text-brand-red">{state.errors.status}</p>}
+          {errors.status && <p className="mt-1 text-xs text-[#B33A3A]">{errors.status.message}</p>}
         </div>
 
         {/* Siap */}
@@ -206,15 +229,14 @@ export function PropertyForm({ action, initialData, submitLabel = 'Simpan' }: Pr
             Siap <span className="text-brand-red">*</span>
           </label>
           <select
-            name="siap"
-            defaultValue={initialData?.siap ?? 'siap_huni'}
+            {...register('siap')}
             className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-brand-black bg-white focus:outline-none focus:ring-2 focus:ring-brand-gold/50 focus:border-brand-gold transition-all"
           >
             <option value="siap_huni">Siap Huni</option>
             <option value="siap_kosong">Siap Kosong</option>
             <option value="siap_huni_renovasi">Siap Huni Renovasi</option>
           </select>
-          {state?.errors?.siap && <p className="mt-1 text-xs text-brand-red">{state.errors.siap}</p>}
+          {errors.siap && <p className="mt-1 text-xs text-[#B33A3A]">{errors.siap.message}</p>}
         </div>
 
         {/* Carport */}
@@ -225,9 +247,7 @@ export function PropertyForm({ action, initialData, submitLabel = 'Simpan' }: Pr
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
-              name="carport"
-              value="true"
-              defaultChecked={initialData?.carport ?? false}
+              {...register('carport')}
               className="accent-brand-gold w-4 h-4"
             />
             <span className="text-sm text-brand-black">Tersedia</span>
@@ -244,9 +264,9 @@ export function PropertyForm({ action, initialData, submitLabel = 'Simpan' }: Pr
               <button
                 key={h}
                 type="button"
-                onClick={() => toggleArray(hadap, h, setHadap)}
+                onClick={() => toggleArray(hadapValue, h, 'hadap')}
                 className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                  hadap.includes(h)
+                  hadapValue.includes(h)
                     ? 'bg-brand-gold text-white'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
@@ -255,7 +275,7 @@ export function PropertyForm({ action, initialData, submitLabel = 'Simpan' }: Pr
               </button>
             ))}
           </div>
-          {state?.errors?.hadap && <p className="mt-1 text-xs text-brand-red">{state.errors.hadap}</p>}
+          {errors.hadap && <p className="mt-1 text-xs text-[#B33A3A]">{errors.hadap.message}</p>}
         </div>
 
         {/* Kawasan */}
@@ -264,13 +284,12 @@ export function PropertyForm({ action, initialData, submitLabel = 'Simpan' }: Pr
             Kawasan <span className="text-brand-red">*</span>
           </label>
           <div className="flex flex-col gap-2">
-            {/* Selected tags & Input */}
             <div className="flex flex-wrap gap-1.5 p-1.5 border border-gray-200 rounded-lg bg-white focus-within:border-brand-gold focus-within:ring-1 focus-within:ring-brand-gold transition-all">
-              {kawasan.map((k) => (
+              {kawasanValue.map((k) => (
                 <button
                   key={k}
                   type="button"
-                  onClick={() => toggleArray(kawasan, k, setKawasan)}
+                  onClick={() => toggleArray(kawasanValue, k, 'kawasan')}
                   className="px-2.5 py-1 rounded-full text-xs font-medium transition-all bg-brand-gold text-white hover:bg-brand-red flex items-center gap-1 group"
                   title="Hapus"
                 >
@@ -282,30 +301,28 @@ export function PropertyForm({ action, initialData, submitLabel = 'Simpan' }: Pr
               ))}
               <input
                 type="text"
-                placeholder={kawasan.length === 0 ? "Ketik kawasan lalu tekan Enter..." : "Ketik lagi..."}
+                placeholder={kawasanValue.length === 0 ? "Ketik kawasan..." : "Ketik lagi..."}
                 className="flex-1 min-w-[150px] px-2 py-1 text-sm border-none bg-transparent focus:outline-none focus:ring-0 text-brand-black placeholder:text-gray-400"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
                     const val = e.currentTarget.value.trim();
-                    if (val && !kawasan.includes(val)) {
-                      setKawasan([...kawasan, val]);
+                    if (val && !kawasanValue.includes(val)) {
+                      setValue('kawasan', [...kawasanValue, val], { shouldValidate: true, shouldDirty: true });
                     }
                     e.currentTarget.value = '';
                   }
                 }}
               />
             </div>
-            
-            {/* Suggestions */}
-            {KAWASAN_OPTIONS.filter(k => !kawasan.includes(k)).length > 0 && (
+            {KAWASAN_OPTIONS.filter(k => !kawasanValue.includes(k)).length > 0 && (
               <div className="flex flex-wrap gap-1.5 items-center mt-1">
                 <span className="text-xs text-gray-400">Saran:</span>
-                {KAWASAN_OPTIONS.filter(k => !kawasan.includes(k)).map((k) => (
+                {KAWASAN_OPTIONS.filter(k => !kawasanValue.includes(k)).map((k) => (
                   <button
                     key={k}
                     type="button"
-                    onClick={() => toggleArray(kawasan, k, setKawasan)}
+                    onClick={() => toggleArray(kawasanValue, k, 'kawasan')}
                     className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-gray-100 text-gray-500 hover:bg-brand-gold/10 hover:text-brand-gold transition-colors"
                   >
                     + {k}
@@ -314,42 +331,53 @@ export function PropertyForm({ action, initialData, submitLabel = 'Simpan' }: Pr
               </div>
             )}
           </div>
-          {state?.errors?.kawasan && <p className="mt-1 text-xs text-brand-red">{state.errors.kawasan}</p>}
+          {errors.kawasan && <p className="mt-1 text-xs text-[#B33A3A]">{errors.kawasan.message}</p>}
         </div>
 
         {/* Maps Link */}
         <div className="sm:col-span-2">
           <FormField
             label="Link Google Maps"
-            name="maps_link"
             type="url"
-            defaultValue={initialData?.maps_link ?? ''}
             placeholder="https://maps.app.goo.gl/..."
-            error={state?.errors?.maps_link}
+            {...register('maps_link')}
+            error={errors.maps_link?.message}
+            isDirty={!!dirtyFields.maps_link}
           />
         </div>
       </div>
 
-      {/* Server error */}
-      {state?.errors?.server && (
-        <div className="p-3 rounded-lg bg-red-50 text-brand-red text-sm">
-          {state.errors.server}
+      {serverError && (
+        <div className="p-3 rounded-lg bg-red-50 text-[#B33A3A] text-sm">
+          {serverError}
         </div>
       )}
 
-      {/* Actions */}
       <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
         <button
-          type="submit"
-          disabled={pending}
+          type="button"
+          onClick={handleSubmit((data) => onSubmit(data, false))}
+          disabled={isPending}
           className="px-6 py-3 bg-brand-gold text-brand-black font-bold rounded-lg text-sm hover:bg-brand-gold/90 transition-all shadow-md shadow-brand-gold/20 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {pending ? 'Menyimpan...' : submitLabel}
+          {isPending ? 'Menyimpan...' : submitLabel}
         </button>
+        {/* Tombol Simpan & Tambah Lagi */}
+        {!initialData && (
+          <button
+            type="button"
+            onClick={handleSubmit((data) => onSubmit(data, true))}
+            disabled={isPending}
+            className="px-6 py-3 bg-white border border-brand-gold text-brand-gold font-bold rounded-lg text-sm hover:bg-brand-gold/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Simpan & Tambah Lagi
+          </button>
+        )}
         <button
           type="button"
           onClick={() => router.back()}
-          className="px-6 py-3 border border-gray-200 text-gray-600 font-medium rounded-lg text-sm hover:bg-gray-50 transition-colors"
+          disabled={isPending}
+          className="px-6 py-3 border border-gray-200 text-gray-600 font-medium rounded-lg text-sm hover:bg-gray-50 transition-colors disabled:opacity-50"
         >
           Batal
         </button>
@@ -358,37 +386,33 @@ export function PropertyForm({ action, initialData, submitLabel = 'Simpan' }: Pr
   )
 }
 
-// ---------------------------------------------------------------------------
-// Form field component (with Dirty State Indicator)
-// ---------------------------------------------------------------------------
-
 function FormField({
   label,
   name,
   type = 'text',
   required,
-  defaultValue,
   placeholder,
   hint,
   error,
   step,
+  isDirty,
+  onChange,
+  onBlur,
+  ref,
 }: {
   label: string
   name: string
   type?: string
   required?: boolean
-  defaultValue?: string | number | null
   placeholder?: string
   hint?: string
   error?: string
   step?: string
+  isDirty?: boolean
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
+  ref?: React.Ref<HTMLInputElement>
 }) {
-  const initialValue = defaultValue ?? ''
-  const [value, setValue] = useState<string | number>(initialValue)
-
-  // Compare as string to handle number conversions easily
-  const isDirty = String(value) !== String(initialValue)
-
   return (
     <div className="relative">
       <label htmlFor={name} className="block text-sm font-medium text-brand-black mb-1.5 flex justify-between items-center">
@@ -401,18 +425,18 @@ function FormField({
         type={type}
         required={required}
         step={step}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
         placeholder={placeholder}
+        onChange={onChange}
+        onBlur={onBlur}
+        ref={ref}
         className={`w-full px-4 py-2.5 rounded-lg border text-sm text-brand-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all ${
           isDirty 
             ? 'border-brand-gold bg-brand-gold/5 focus:border-brand-gold shadow-[0_0_10px_rgba(201,169,97,0.1)]' 
             : 'border-gray-200 bg-white focus:border-brand-gold'
-        }`}
+        } ${error ? 'border-brand-red focus:border-brand-red focus:ring-brand-red/50' : ''}`}
       />
       {hint && <p className="mt-1 text-xs text-gray-400">{hint}</p>}
-      {error && <p className="mt-1 text-xs text-brand-red">{error}</p>}
+      {error && <p className="mt-1 text-xs text-[#B33A3A]">{error}</p>}
     </div>
   )
 }
-
