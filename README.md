@@ -86,6 +86,18 @@ npm install
    VALUES ('<uuid-pengguna>', '<email>', 'superadmin');
    ```
 
+#### d. Seeding Data Dummy (Opsional)
+
+Jika Anda ingin langsung mengisi database dengan 50+ properti dummy untuk keperluan testing, jalankan skrip seed (membutuhkan Node 20.6+):
+
+```bash
+node --env-file=.env.local scripts/seed.mjs
+```
+
+Skrip ini akan secara otomatis membuatkan akun Superadmin bawaan:
+- **Email:** `superadmin@primeproperty.id`
+- **Password:** `Password123!`
+
 ### 5. Konfigurasi Environment Variables
 
 Buat file `.env.local` di root proyek:
