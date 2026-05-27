@@ -33,7 +33,12 @@ export async function toggleAdminStatus(profileId: string, currentlyActive: bool
 export async function resetAdminPassword(email: string) {
   await requireRole('superadmin')
 
-  const { error } = await supabaseAdmin.auth.resetPasswordForEmail(email)
+  // Ambil origin (localhost atau production) dari env
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+  
+  const { error } = await supabaseAdmin.auth.resetPasswordForEmail(email, {
+    redirectTo: `${siteUrl}/agent/update-password`,
+  })
 
   if (error) {
     throw new Error(`Gagal mengirim email reset: ${error.message}`)

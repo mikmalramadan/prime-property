@@ -65,11 +65,12 @@ export async function updateSession(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
-  // ── Rule 1: protect all /agent/* routes except /agent/login ──────────────
+  // ── Rule 1: protect all /agent/* routes except /agent/login and /agent/update-password ──
   const isAgentRoute = pathname.startsWith(AGENT_PREFIX)
   const isLoginPage  = pathname === AGENT_LOGIN
+  const isUpdatePasswordPage = pathname === '/agent/update-password'
 
-  if (isAgentRoute && !isLoginPage && !user) {
+  if (isAgentRoute && !isLoginPage && !isUpdatePasswordPage && !user) {
     const loginUrl = request.nextUrl.clone()
     loginUrl.pathname = AGENT_LOGIN
     // Preserve the intended destination so we can redirect back after login
