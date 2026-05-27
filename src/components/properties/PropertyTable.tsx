@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { StatusBadge, SiapBadge, TipeBadge } from '@/components/ui/Badge'
 import { formatRupiah, formatDimensions } from '@/lib/format'
 import dynamic from 'next/dynamic'
@@ -128,11 +129,12 @@ function SortHeader({
   currentSort: string
   currentOrder: string
 }) {
+  const searchParams = useSearchParams()
   const isActive = currentSort === field
   const nextOrder = isActive && currentOrder === 'asc' ? 'desc' : 'asc'
 
-  // Build URL with sort params (uses shallow navigation via Link)
-  const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '')
+  // Build URL with sort params using Next.js useSearchParams
+  const params = new URLSearchParams(searchParams.toString())
   params.set('sort', field)
   params.set('order', nextOrder)
 
@@ -140,11 +142,12 @@ function SortHeader({
     <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
       <Link
         href={`?${params.toString()}`}
-        className="inline-flex items-center gap-1 hover:text-brand-gold transition-colors"
+        className="inline-flex items-center gap-2 hover:text-brand-gold transition-colors group"
       >
         {label}
-        <span className={isActive ? 'text-brand-gold' : 'text-gray-300'}>
-          {isActive && currentOrder === 'asc' ? '↑' : '↓'}
+        <span className={`flex flex-col items-center justify-center -space-y-0.5 text-[10px] leading-tight transition-all ${isActive ? 'text-brand-gold' : 'text-gray-400 group-hover:text-brand-gold'}`}>
+          <span className={isActive && currentOrder === 'asc' ? 'font-black scale-125' : 'opacity-60'}>▲</span>
+          <span className={isActive && currentOrder === 'desc' ? 'font-black scale-125' : 'opacity-60'}>▼</span>
         </span>
       </Link>
     </th>
