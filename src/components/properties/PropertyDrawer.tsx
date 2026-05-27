@@ -4,15 +4,17 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { StatusBadge, SiapBadge, TipeBadge } from '@/components/ui/Badge'
+import { DeletePropertyButton } from '@/components/properties/DeletePropertyModal'
 import { formatRupiah, formatDimensions, formatLuasTanah, formatDate } from '@/lib/format'
 import type { PropertyRow } from '@/types/database'
 
 interface PropertyDrawerProps {
   property: PropertyRow | null
+  isSuperadmin: boolean
   onClose: () => void
 }
 
-export function PropertyDrawer({ property, onClose }: PropertyDrawerProps) {
+export function PropertyDrawer({ property, isSuperadmin, onClose }: PropertyDrawerProps) {
   const [mounted, setMounted] = useState(false)
 
   // Avoid hydration mismatch by waiting for mount
@@ -144,12 +146,22 @@ export function PropertyDrawer({ property, onClose }: PropertyDrawerProps) {
           >
             Halaman Detail
           </Link>
-          <Link
-            href={`/agent/dashboard/properties/${property.id}/edit`}
-            className="flex-1 inline-flex justify-center items-center px-4 py-2.5 bg-brand-gold text-brand-black font-semibold rounded-xl text-sm hover:bg-brand-gold/90 transition-all shadow-md shadow-brand-gold/20"
-          >
-            Edit Properti
-          </Link>
+          {isSuperadmin && (
+            <>
+              <Link
+                href={`/agent/dashboard/properties/${property.id}/edit`}
+                className="flex-1 inline-flex justify-center items-center px-4 py-2.5 bg-brand-gold text-brand-black font-semibold rounded-xl text-sm hover:bg-brand-gold/90 transition-all shadow-md shadow-brand-gold/20"
+              >
+                Edit Properti
+              </Link>
+              <div className="flex-none">
+                <DeletePropertyButton
+                  propertyId={property.id}
+                  propertyName={property.nama_property}
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>,

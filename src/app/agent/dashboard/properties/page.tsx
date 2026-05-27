@@ -121,7 +121,7 @@ export default async function PropertiesPage({ searchParams }: PageProps) {
       </Suspense>
 
       {/* Table */}
-      <PropertyTable properties={properties} sort={sort} order={order} />
+      <PropertyTable properties={properties} sort={sort} order={order} isSuperadmin={isSuperadmin} />
 
       {/* Pagination */}
       <Suspense fallback={null}>

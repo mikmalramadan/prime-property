@@ -11,9 +11,10 @@ interface PropertyTableProps {
   properties: PropertyRow[]
   sort: string
   order: string
+  isSuperadmin: boolean
 }
 
-export function PropertyTable({ properties, sort, order }: PropertyTableProps) {
+export function PropertyTable({ properties, sort, order, isSuperadmin }: PropertyTableProps) {
   const [selectedProperty, setSelectedProperty] = useState<PropertyRow | null>(null)
 
   if (properties.length === 0) {
@@ -99,6 +100,7 @@ export function PropertyTable({ properties, sort, order }: PropertyTableProps) {
 
       <PropertyDrawer
         property={selectedProperty}
+        isSuperadmin={isSuperadmin}
         onClose={() => setSelectedProperty(null)}
       />
     </div>
