@@ -68,7 +68,6 @@ export async function POST(request: Request) {
     // 3. Insert tabel profiles untuk set role = 'admin' dan nama
     const { error: profileError } = await supabaseAdmin
       .from('profiles')
-      // @ts-expect-error Type inference issue with generated schema
       .insert({
         id: authData.user.id,
         email: validatedData.email,
