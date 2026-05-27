@@ -85,3 +85,9 @@ supabase/.temp
 # ==============================
 msg_filter.py
 *.sh
+
+# ==============================
+# Local Agent / IDE Artifacts
+# ==============================
+scratch/
+.tempmediaStorage/
