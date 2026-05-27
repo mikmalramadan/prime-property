@@ -5,10 +5,14 @@ import { HeroParticles } from '@/components/landing/HeroParticles'
 export function HeroSection() {
   return (
     <section className="relative bg-brand-black overflow-hidden min-h-[90vh] flex items-center">
-      {/* Background image with low opacity */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.30]"
-        style={{ backgroundImage: "url('/hero-bg.png')" }}
+      {/* Background image optimized for LCP */}
+      <Image
+        src="/hero-bg.png"
+        alt="Prime Property Hero Background"
+        fill
+        priority
+        quality={85}
+        className="object-cover opacity-[0.30]"
       />
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-brand-black/50 via-brand-black/20 to-brand-black/70" />

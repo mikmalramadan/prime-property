@@ -42,16 +42,22 @@ const VALUES = [
   },
 ] as const
 
+import Image from 'next/image'
 import { ScrollReveal } from '@/components/ui/ScrollReveal'
 import { HeroParticles } from '@/components/landing/HeroParticles'
 
 export function ValueProposition() {
   return (
     <section className="relative py-24 sm:py-32 bg-brand-black overflow-hidden">
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.20]"
-        style={{ backgroundImage: "url('/value-bg.png')" }}
-      />
+      <div className="absolute inset-0">
+        <Image
+          src="/value-bg.png"
+          alt="Value Proposition Background"
+          fill
+          quality={75}
+          className="object-cover opacity-20 mix-blend-overlay"
+        />
+      </div>
       <div className="absolute inset-0 bg-gradient-to-b from-brand-black/50 via-brand-black/20 to-brand-black/90" />
       <HeroParticles />
 
