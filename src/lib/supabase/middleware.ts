@@ -49,7 +49,7 @@ export async function updateSession(request: NextRequest) {
             supabaseResponse.cookies.set(name, value, {
               ...options,
               httpOnly: true,
-              secure: process.env.NODE_ENV === 'production',
+              secure: options.secure,
               sameSite: 'lax',
             }),
           )

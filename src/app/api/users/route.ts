@@ -65,15 +65,17 @@ export async function POST(request: Request) {
     // 2. Tunggu sebentar agar trigger database selesai mengeksekusi insert ke profiles
     await new Promise((resolve) => setTimeout(resolve, 500))
 
-    // 3. Update tabel profiles untuk set role = 'admin' dan nama
+    // 3. Insert tabel profiles untuk set role = 'admin' dan nama
     const { error: profileError } = await supabaseAdmin
       .from('profiles')
       // @ts-expect-error Type inference issue with generated schema
-      .update({
+      .insert({
+        id: authData.user.id,
+        email: validatedData.email,
         role: 'admin',
         full_name: validatedData.name,
+        is_active: true
       })
-      .eq('id', authData.user.id)
 
     if (profileError) {
       return NextResponse.json(
