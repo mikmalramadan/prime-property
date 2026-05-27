@@ -100,3 +100,49 @@ async function updatePropertyHandler(
 
 // Hanya superadmin yang boleh melakukan PATCH
 export const PATCH = withAuth(updatePropertyHandler, 'superadmin')
+
+// ---------------------------------------------------------------------------
+// DELETE Handler (Soft Delete Property)
+// ---------------------------------------------------------------------------
+
+async function deletePropertyHandler(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const propertyId = (await params).id
+    const supabase = await createClient()
+
+    // 1. Dapatkan session user
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // 2. Soft delete properti dengan update deleted_at
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error: deleteError } = await (supabase.from('properties') as any)
+      .update({ deleted_at: new Date().toISOString() })
+      .eq('id', propertyId)
+
+    if (deleteError) {
+      return NextResponse.json({ error: deleteError.message }, { status: 500 })
+    }
+
+    // 3. Insert ke audit_logs (action='delete')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (supabase.from('audit_logs') as any).insert({
+      property_id: propertyId,
+      user_id: session.user.id,
+      action: 'delete',
+      changed_fields: null
+    })
+
+    return NextResponse.json({ success: true }, { status: 200 })
+  } catch (error) {
+    return NextResponse.json({ error: 'Terjadi kesalahan internal.' }, { status: 500 })
+  }
+}
+
+// Hanya superadmin yang boleh melakukan DELETE
+export const DELETE = withAuth(deletePropertyHandler, 'superadmin')

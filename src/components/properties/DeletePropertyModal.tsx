@@ -3,7 +3,6 @@
 import { useState, useTransition, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useRouter } from 'next/navigation'
-import { deleteProperty } from '@/app/agent/dashboard/properties/actions'
 import { toast } from '@/components/ui/Toast'
 
 interface DeletePropertyModalProps {
@@ -23,14 +22,24 @@ export function DeletePropertyButton({ propertyId, propertyName }: DeletePropert
 
   const handleDelete = () => {
     startTransition(async () => {
-      const result = await deleteProperty(propertyId)
-      if (result.error) {
-        toast(result.error, 'error')
-      } else {
-        toast(`Properti "${propertyName}" berhasil dihapus.`, 'success')
-        router.push('/agent/dashboard/properties')
+      try {
+        const response = await fetch(`/api/properties/${propertyId}`, {
+          method: 'DELETE',
+        })
+        const result = await response.json()
+        
+        if (!response.ok) {
+          toast(result.error || 'Gagal menghapus properti.', 'error')
+        } else {
+          toast(`Properti "${propertyName}" berhasil dihapus.`, 'success')
+          router.push('/agent/dashboard/properties')
+          router.refresh()
+        }
+      } catch (err) {
+        toast('Terjadi kesalahan pada jaringan.', 'error')
+      } finally {
+        setOpen(false)
       }
-      setOpen(false)
     })
   }
 

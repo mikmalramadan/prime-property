@@ -159,30 +159,3 @@ export async function updateProperty(
   return { success: true, propertyId }
 }
 
-// ---------------------------------------------------------------------------
-// Delete (soft)
-// ---------------------------------------------------------------------------
-
-export async function deleteProperty(propertyId: string): Promise<{ error?: string }> {
-  const { user } = await requireRole('superadmin')
-
-  const supabase = await createClient()
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (supabase.from('properties') as any)
-    .update({ deleted_at: new Date().toISOString() })
-    .eq('id', propertyId)
-
-  if (error) {
-    return { error: `Gagal menghapus: ${error.message}` }
-  }
-
-  await writeAuditLog(supabase, {
-    property_id: propertyId,
-    user_id: user.id,
-    action: 'delete',
-    changed_fields: null,
-  })
-
-  return {}
-}
