@@ -49,8 +49,8 @@ export async function requireAuth() {
 }
 
 /**
- * Require a specific role — redirects to /agent/login if not authenticated,
- * throws 403-equivalent redirect if the user doesn't have the required role.
+ * Ambil user + profile (role) dari server.
+ * Throw 403 (atau redirect dengan error forbidden) jika role tidak cukup.
  *
  * @param role The required role ('admin' or 'superadmin').
  *             'admin' allows both admin and superadmin.
