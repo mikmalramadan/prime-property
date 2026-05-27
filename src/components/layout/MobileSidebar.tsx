@@ -11,7 +11,7 @@ const NAV_LINKS = [
 ] as const
 
 const SUPERADMIN_LINKS = [
-  { href: '/agent/dashboard/admin', label: 'Kelola Admin', icon: AdminIcon },
+  { href: '/agent/dashboard/users', label: 'Kelola Admin', icon: AdminIcon },
   { href: '/agent/dashboard/audit', label: 'Audit Log', icon: AuditIcon },
 ] as const
 
@@ -86,6 +86,7 @@ export function MobileSidebar({ email, role, isSuperadmin }: MobileSidebarProps)
                   <span>{link.label}</span>
                 </Link>
               ))}
+
               {isSuperadmin &&
                 SUPERADMIN_LINKS.map((link) => (
                   <Link

@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { toggleAdminStatus } from '@/app/agent/dashboard/admin/actions'
+import { toggleAdminStatus } from '@/app/agent/dashboard/users/actions'
 import { toast } from '@/components/ui/Toast'
 
 interface ToggleStatusModalProps {

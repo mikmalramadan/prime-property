@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { resetAdminPassword } from '@/app/agent/dashboard/admin/actions'
+import { resetAdminPassword } from '@/app/agent/dashboard/users/actions'
 import { toast } from '@/components/ui/Toast'
 
 interface ResetPasswordModalProps {
@@ -14,7 +14,7 @@ export function ResetPasswordModal({ profileId, email }: ResetPasswordModalProps
   const [open, setOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
   const [mounted, setMounted] = useState(false)
-  const [tempPassword, setTempPassword] = useState<string | null>(null)
+  const [isSuccess, setIsSuccess] = useState(false)
 
   // Ensure portal only renders on client
   useEffect(() => {
@@ -24,10 +24,10 @@ export function ResetPasswordModal({ profileId, email }: ResetPasswordModalProps
   const handleReset = () => {
     startTransition(async () => {
       try {
-        const result = await resetAdminPassword(profileId)
-        if (result.success && result.tempPassword) {
-          setTempPassword(result.tempPassword)
-          toast('Password berhasil direset.', 'success')
+        const result = await resetAdminPassword(email)
+        if (result.success) {
+          setIsSuccess(true)
+          toast('Email reset password berhasil dikirim.', 'success')
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -39,19 +39,10 @@ export function ResetPasswordModal({ profileId, email }: ResetPasswordModalProps
     })
   }
 
-  const handleCopy = () => {
-    if (tempPassword) {
-      navigator.clipboard.writeText(tempPassword)
-      toast('Password disalin ke clipboard!', 'success')
-      setOpen(false)
-      setTempPassword(null)
-    }
-  }
-
   const handleClose = () => {
     if (!isPending) {
       setOpen(false)
-      setTempPassword(null)
+      setIsSuccess(false)
     }
   }
 
@@ -89,10 +80,10 @@ export function ResetPasswordModal({ profileId, email }: ResetPasswordModalProps
               Reset Password
             </h2>
             
-            {!tempPassword ? (
+            {!isSuccess ? (
               <>
                 <p className="text-sm text-gray-500 text-center mb-6 leading-relaxed">
-                  Apakah Anda yakin ingin mereset password untuk admin <strong className="text-brand-black font-semibold">&ldquo;{email}&rdquo;</strong>? Password lama akan hangus dan sistem akan memberikan password sementara.
+                  Apakah Anda yakin ingin mereset password untuk admin <strong className="text-brand-black font-semibold">&ldquo;{email}&rdquo;</strong>? Link reset akan dikirimkan ke email tersebut.
                 </p>
 
                 <div className="flex gap-3">
@@ -110,24 +101,21 @@ export function ResetPasswordModal({ profileId, email }: ResetPasswordModalProps
                     disabled={isPending}
                     className="flex-1 py-3 text-brand-black bg-brand-gold font-bold rounded-xl text-sm transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
                   >
-                    {isPending ? 'Memproses...' : 'Ya, Reset'}
+                    {isPending ? 'Mengirim...' : 'Kirim Email'}
                   </button>
                 </div>
               </>
             ) : (
               <>
-                <p className="text-sm text-gray-500 text-center mb-4 leading-relaxed">
-                  Password berhasil direset. Silakan salin password sementara ini dan berikan kepada agen yang bersangkutan:
+                <p className="text-sm text-gray-500 text-center mb-6 leading-relaxed">
+                  Instruksi reset password telah berhasil dikirim ke alamat email <strong className="text-brand-black font-semibold">{email}</strong>.
                 </p>
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-center mb-6">
-                  <code className="text-xl font-mono font-bold text-brand-black">{tempPassword}</code>
-                </div>
                 <button
                   type="button"
-                  onClick={handleCopy}
+                  onClick={handleClose}
                   className="w-full py-3 text-brand-black bg-brand-gold font-bold rounded-xl text-sm transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
                 >
-                  Salin & Tutup
+                  Tutup
                 </button>
               </>
             )}

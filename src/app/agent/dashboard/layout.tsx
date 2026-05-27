@@ -58,7 +58,7 @@ export default async function DashboardLayout({
           </SidebarLink>
           {isSuperadmin && (
             <>
-              <SidebarLink href="/agent/dashboard/admin" icon={AdminIcon}>
+              <SidebarLink href="/agent/dashboard/users" icon={AdminIcon}>
                 Kelola Admin
               </SidebarLink>
               <SidebarLink href="/agent/dashboard/audit" icon={AuditIcon}>
