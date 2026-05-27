@@ -44,17 +44,17 @@ export function PropertyTable({ properties, sort, order, isSuperadmin }: Propert
           <thead>
             <tr className="border-b border-gray-200/50">
               <SortHeader label="Nama" field="nama_property" currentSort={sort} currentOrder={order} />
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">Group</th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">Lebar × Panjang</th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">Hadap</th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">Tipe</th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">Tingkat</th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/90">Group</th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/90">Lebar × Panjang</th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/90">Hadap</th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/90">Tipe</th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/90">Tingkat</th>
               <SortHeader label="Harga" field="price" currentSort={sort} currentOrder={order} />
-              <th className="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">Carport</th>
+              <th className="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/90">Carport</th>
               <SortHeader label="Status" field="status" currentSort={sort} currentOrder={order} />
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">Siap</th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/90">Siap</th>
               <SortHeader label="Ditambahkan" field="created_at" currentSort={sort} currentOrder={order} />
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 backdrop-blur-sm">Kawasan</th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/90">Kawasan</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100/50">

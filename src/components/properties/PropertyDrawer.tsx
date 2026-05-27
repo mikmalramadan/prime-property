@@ -46,7 +46,7 @@ export function PropertyDrawer({ property, isSuperadmin, onClose }: PropertyDraw
     <div className="fixed inset-0 z-[100] flex justify-end">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-brand-black/40 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0 bg-brand-black/60 sm:backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 

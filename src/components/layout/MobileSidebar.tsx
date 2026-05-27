@@ -48,7 +48,7 @@ export function MobileSidebar({ email, role, isSuperadmin }: MobileSidebarProps)
         <div className="fixed inset-0 z-[60] lg:hidden">
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/60 sm:backdrop-blur-sm"
             onClick={() => setOpen(false)}
           />
 
